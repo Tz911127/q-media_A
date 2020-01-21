@@ -23,7 +23,7 @@ export default {
       loading: true
     };
   },
-  methods: {},
+
   mounted() {
     setTimeout(() => {
       this.flag = true;

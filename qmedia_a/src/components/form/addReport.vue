@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-form size="mini" :model="reportForm" label-width="80px">
-      <el-form-item label="报表名称">
+    <el-form size="mini" :model="reportForm" label-width="80px" ref="ruleForm" :rules="reportRules">
+      <el-form-item label="报表名称" prop="name">
         <el-input
           v-model.trim="reportForm.name"
           maxlength="20"
@@ -13,20 +13,20 @@
         <v-select
           :options="types"
           @optionChange="typeChange"
-          :propValue="typeValue"
+          :propValue="reportForm.typeValue"
           :clearable="false"
         ></v-select>
       </el-form-item>
-      <template v-if="typeValue==0">
+      <template v-if="reportForm.typeValue==0">
         <el-form-item label="终端业务">
-          <el-select v-model="workValue" @change="workChange">
+          <el-select v-model="reportForm.workValue" @change="workChange">
             <el-option v-for="item in works" :key="item.val" :label="item.name" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
       </template>
-      <template v-if="typeValue==1">
+      <template v-if="reportForm.typeValue==1">
         <el-form-item label="广告业务">
-          <el-select v-model="adValue" @change="adChange">
+          <el-select v-model="reportForm.adValue" @change="adChange">
             <el-option v-for="item in ads" :key="item.val" :label="item.name" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
@@ -35,32 +35,32 @@
         <v-select
           :options="reports"
           @optionChange="reportChange"
-          :propValue="reportValue"
+          :propValue="reportForm.reportValue"
           :clearable="false"
           ref="reportSelect"
         ></v-select>
       </el-form-item>
       <template v-if="isDetailed">
-        <el-form-item label="企业代码" v-if="!isTerminalNum">
-          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.code"></el-input>
+        <el-form-item label="企业代码" v-if="!isTerminalNum" prop="ck">
+          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.ck"></el-input>
         </el-form-item>
-        <el-form-item label="终端编号" v-else>
-          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.code"></el-input>
+        <el-form-item label="终端编号" v-else prop="deviceSn">
+          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.deviceSn"></el-input>
         </el-form-item>
       </template>
       <template v-if="adName">
-        <el-form-item label="广告名称">
-          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.code"></el-input>
+        <el-form-item label="广告名称" prop="programName">
+          <el-input placeholder=" 输入3-16位小写字母" v-model.trim="reportForm.programName"></el-input>
         </el-form-item>
       </template>
-      <el-form-item label="时间">
+      <el-form-item label="时间" prop="timeValue">
         <el-date-picker
-          v-model="timeValue"
+          v-model="reportForm.timeValue"
           :type="isMonth?'monthrange':'daterange'"
           range-separator="至"
           :start-placeholder="isMonth?'开始月份':'开始日期'"
           :end-placeholder="isMonth?'结束月份':'结束日期'"
-          value-format="yyyy-MM-dd"
+          :value-format="isMonth?'yyyyMM':'yyyyMMdd'"
           :picker-options="pickerOptions"
           @change="change"
         ></el-date-picker>
@@ -75,16 +75,36 @@ export default {
     return {
       reportForm: {
         name: "",
-        code: ""
+        ck: "",
+        deviceSn: "",
+        programName: "",
+        workValue: "0",
+        adValue: "0",
+        reportValue: "0",
+        timeValue: "",
+        typeValue: "0"
       },
-      typeValue: "0",
+      reportRules: {
+        name: [
+          { required: true, message: "请输入1-20位报表名称", trigger: "blur" }
+        ],
+        ck: [{ required: true, message: "请输入企业代码", trigger: "blur" }],
+        timeValue: [
+          { required: true, message: "请选择时间", trigger: "change" }
+        ],
+        programName: [
+          { required: true, message: "请输入广告名称", trigger: "blur" }
+        ],
+        deviceSn: [
+          { required: true, message: "请输入终端编号", trigger: "blur" }
+        ]
+      },
       types: [
         { name: "终端", val: "0" },
         { name: "广告", val: "1" },
         { name: "合同", val: "2" }
       ],
       //业务类型
-      workValue: "0",
       works: [
         { name: "终端数量", val: "0" },
         { name: "在线时长", val: "1" },
@@ -92,7 +112,7 @@ export default {
         { name: "播放时长（个别企业）", val: "3" }
       ],
       //报表类型
-      reportValue: "0",
+
       reports: [
         { name: "全部汇总", val: "0" },
         { name: "按月汇总", val: "1" },
@@ -100,20 +120,18 @@ export default {
         { name: "明细", val: "3" }
       ],
       //广告业务
-      adValue: "0",
       ads: [
         { name: "广告数量", val: "0" },
         { name: "广告播放时长(单位企业）", val: "1" }
       ],
-      timeValue: "",
+
       isMonth: false,
       isDetailed: false,
       isTerminalNum: false,
       adName: false,
-      typeValue: "0",
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now();
+          return time.getTime() > Date.now() - 8.64e7;
         }
       },
       pickerMinDate: ""
@@ -122,11 +140,12 @@ export default {
   methods: {
     //业务类型
     typeChange(val) {
-      this.typeValue = val;
-      this.workValue = "0";
-      this.adValue = "0";
+      this.reportForm.typeValue = val;
+      this.reportForm.workValue = "0";
+      this.reportForm.adValue = "0";
+      this.reportForm.reportValue = "0";
       this.$refs.reportSelect.value = "0";
-      this.timeValue = "";
+      this.reportForm.timeValue = "";
       this.isDetailed = false;
       this.adName = false;
       if (val != 0) {
@@ -141,7 +160,7 @@ export default {
       let item = { name: "明细", val: "3" };
       this.$refs.reportSelect.value = "0";
       this.isDetailed = false;
-      this.workValue = val;
+      this.reportForm.workValue = val;
       if (val == 2) {
         if (this.reports.length > 3) {
           this.reports.pop();
@@ -160,7 +179,8 @@ export default {
     },
     //报表类型
     reportChange(val) {
-      this.timeValue = "";
+      this.reportForm.timeValue = "";
+      this.reportForm.reportValue = val;
       //月份判断
       if (val == 1) {
         this.isMonth = true;
@@ -197,8 +217,8 @@ export default {
         };
       }
       //企业代码判断
-      if (this.typeValue == 0) {
-        if (this.workValue != 3) {
+      if (this.reportForm.typeValue == 0) {
+        if (this.reportForm.workValue != 3) {
           if (val == 3) {
             this.isDetailed = true;
           } else {
@@ -207,7 +227,7 @@ export default {
         }
       }
       //终端编号
-      if (this.workValue == 3 && val == 3) {
+      if (this.reportForm.workValue == 3 && val == 3) {
         this.isTerminalNum = true;
       } else {
         this.isTerminalNum = false;
@@ -215,13 +235,16 @@ export default {
 
       //广告业务
 
-      if (this.typeValue == 1 && this.adValue == 0) {
+      if (this.reportForm.typeValue == 1 && this.reportForm.adValue == 0) {
         if (val == 3) {
           this.isDetailed = true;
         } else {
           this.isDetailed = false;
         }
-      } else if (this.typeValue == 1 && this.adValue == 1) {
+      } else if (
+        this.reportForm.typeValue == 1 &&
+        this.reportForm.adValue == 1
+      ) {
         if (val == 3) {
           this.adName = true;
         } else {
@@ -230,7 +253,7 @@ export default {
       }
 
       //合同业务
-      if (this.typeValue == 2) {
+      if (this.reportForm.typeValue == 2) {
         if (val == 3) {
           this.isDetailed = true;
         } else {
@@ -238,14 +261,12 @@ export default {
         }
       }
     },
-    change(val) {
-      console.log(val);
-    },
+    change(val) {},
     adChange(val) {
-      this.adValue = val;
+      this.reportForm.adValue = val;
       this.$refs.reportSelect.value = "0";
       this.adName = false;
-      if (this.typeValue == 1 && val == 1) {
+      if (this.reportForm.typeValue == 1 && val == 1) {
         this.isDetailed = true;
       } else {
         this.isDetailed = false;

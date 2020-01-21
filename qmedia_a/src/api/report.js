@@ -105,3 +105,44 @@ export const getDevicePage = (params) => {
         method: 'get'
     })
 }
+
+//合同
+///api/contractReport/increment
+// 获取新增合同图表数据
+export const getContractReport = (params) => {
+    return axios.request({
+        url: "/api/contractReport/increment",
+        params: params,
+        method: "get"
+    })
+}
+
+export const getContractTop10 = (params) => {
+    return axios.request({
+        url: "/api/contractReport/paidMoneyTotalTop10",
+        params: params,
+        method: 'get'
+    })
+}
+export const getOrderReportPage = (params) => {
+    return axios.request({
+        url: "/api/contractReport/contractStatisticMonth",
+        params: params,
+        method: 'get'
+    })
+}
+export const getOrderReportDetail = (params) => {
+    return axios.request({
+        url: "/api/contractReport/listContractByMonthPage",
+        params: params,
+        method: 'get'
+    })
+}
+
+export const postReportJob = (data) => {
+    return axios.request({
+        url: "/api/report/submit-job",
+        data: data,
+        method: 'post'
+    })
+}

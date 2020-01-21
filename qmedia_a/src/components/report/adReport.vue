@@ -104,10 +104,35 @@ export default {
       changeVal: 0,
       btnValue: 0,
       options: [
-        { label: "新增终端排名", value: 0 },
-        { label: "终端在线时长排名", value: 1 }
-      ]
+        { label: "新增广告排名", value: 0 },
+        { label: "广告在线时长排名", value: 1 }
+      ],
+      tabIndex: 0
     };
+  },
+  computed: {
+    opened() {
+      return this.$store.state.user.isCollapse;
+    }
+  },
+  watch: {
+    opened(val) {
+      if (this.tabIndex == 0) {
+        this.$refs.terminalAdd.flag = false;
+        this.value = [];
+        this.dataMonth = [];
+        setTimeout(() => {
+          this.getIncrementData();
+        }, 200);
+      } else {
+        this.$refs.terminalOnline.flag = false;
+        this.playValue = [];
+        this.playDataMonth = [];
+        setTimeout(() => {
+          this.getPlayPage();
+        }, 200);
+      }
+    }
   },
   methods: {
     //图形数据
@@ -134,6 +159,7 @@ export default {
       });
     },
     handleClick(val) {
+      this.tabIndex = val.index;
       if (this.toggther) {
         this.getPlayPage();
         this.toggther = false;

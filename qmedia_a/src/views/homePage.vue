@@ -49,6 +49,19 @@ export default {
       loading: true
     };
   },
+  computed: {
+    opened() {
+      return this.$store.state.user.isCollapse;
+    }
+  },
+  watch: {
+    opened(val) {
+      this.flag = false;
+      setTimeout(() => {
+        this.getData();
+      }, 100);
+    }
+  },
   methods: {
     getData() {
       this.loading = true;
@@ -75,7 +88,7 @@ export default {
   }
 };
 </script>
-<style scope>
+<style scoped>
 .el-col {
   background: #fff;
   padding: 10px;

@@ -7,6 +7,7 @@
         placeholder="请选择"
         style="width:140px;margin-right:15px"
         @change="change"
+        v-if="isSelect"
       >
         <el-option
           v-for="item in options"
@@ -15,6 +16,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
+      <span v-else style="margin-right:15px;font-size:14px">已付款合同金额排名</span>
       <el-button
         size="mini"
         v-for="btn in btns"
@@ -39,7 +41,11 @@ export default {
   props: {
     lis: Array,
     loading: Boolean,
-    options:Array
+    options: Array,
+    isSelect: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {

@@ -35,17 +35,21 @@ export function filterMonth(date) {
         );
     }
 }
+//格式化money
+export function filterMoney(money) {
+    return '￥' + (money / 100).toFixed(2)
+}
 //秒转换成时分秒
 export function align(n) {
     return (n < 10 ? "0" : "") + n;
 }
 export function formatSeconds(s) {
-    var day = Math.floor(s / (24 * 3600))
-    var hour = Math.floor((s - day * 24 * 3600) / 3600);
-    var minute = Math.floor((s - day * 24 * 3600 - hour * 3600) / 60);
-    var second = s - day * 24 * 3600 - hour * 3600 - minute * 60;
+    var hour = Math.floor((s) / 3600);
+    var minute = Math.floor((s - hour * 3600) / 60);
+    var second = s - hour * 3600 - minute * 60;
     return align(hour) + "时" + align(minute) + "分" + align(second) + "秒";
 }
+
 
 //KB转MB
 export function programMb(num) {
@@ -82,8 +86,18 @@ export function filterPrograms(name, type) {
         return name
     } else {
         let len = name.lastIndexOf('_')
-        // let newName = name.substring(len + 1)
         return name.substring(0, len) + '(已删)'
+    }
+
+}
+//已删除的终端名称转换
+export function filterTerminal(name, type) {
+    if (type == 0) {
+        return name
+    } else {
+        let len = name.lastIndexOf('_')
+        let newName = name.substring(len + 1)
+        return name.substring(0, len) + '(' + filterTime(Number(newName)) + ')'
     }
 
 }

@@ -24,11 +24,11 @@
           ></v-select>
           <el-date-picker
             v-model="dateValue"
-            type="monthrange"
+            type="daterange"
             range-separator="至"
-            start-placeholder="开始月份"
-            end-placeholder="结束月份"
-            value-format="yyyyMM"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyyMMdd"
             @change="dateChange"
           ></el-date-picker>
           <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
@@ -49,8 +49,13 @@
         </div>
       </template>
     </basic-table>
-    <v-dialog ref="addReport" :title="title==0?'添加报表':'查看导出条件'" :showFooter="title==0?true:false">
-      <add-report v-if="title==0"></add-report>
+    <v-dialog
+      ref="addReport"
+      :title="title==0?'添加报表':'查看导出条件'"
+      :showFooter="title==0?true:false"
+      @handleClose="handleClose"
+    >
+      <add-report ref="addReportForm" v-if="title==0"></add-report>
       <report-form v-else :termForm="termForm"></report-form>
     </v-dialog>
   </div>
@@ -60,7 +65,7 @@
 import basicTable from "./components/basicTable";
 import addReport from "../form/addReport";
 import reportForm from "../form/reportForm";
-import { getReportJob, delReportJob } from "@/api/report.js";
+import { getReportJob, delReportJob, postReportJob } from "@/api/report.js";
 export default {
   components: {
     basicTable,
@@ -133,7 +138,7 @@ export default {
                 method: () => this.review(row)
               },
               {
-                isShow: true,
+                isShow: row.status == 1 ? true : false,
                 title: "下载",
                 icon: "el-icon-download",
                 method: row => {
@@ -141,7 +146,7 @@ export default {
                 }
               },
               {
-                isShow: true,
+                isShow: row.status != 0 ? true : false,
                 title: "删除",
                 icon: "el-icon-delete",
                 method: () => this.deleteRow(row)
@@ -248,6 +253,34 @@ export default {
     addReport() {
       this.title = 0;
       this.$refs.addReport.dialogVisible = true;
+    },
+    handleClose() {
+      let reportForm = this.$refs.addReportForm.reportForm;
+      this.$refs.addReportForm.$refs.ruleForm.validate(data => {
+        if (data) {
+          let params = {
+            name: reportForm.name,
+            bizType: reportForm.typeValue,
+            bizDetail:
+              reportForm.typeValue == 2
+                ? "-1"
+                : reportForm.typeValue == 1
+                ? reportForm.adValue
+                : reportForm.workValue,
+            countType: reportForm.reportValue,
+            start: reportForm.timeValue[0],
+            end: reportForm.timeValue[1],
+            ck: reportForm.ck,
+            deviceSn: reportForm.deviceSn,
+            programName: reportForm.programName
+          };
+          postReportJob(params).then(res => {
+            this.$refs.addReport.dialogVisible = false;
+            this.toast("创建成功", "success");
+            this.getData();
+          });
+        }
+      });
     }
   }
 };

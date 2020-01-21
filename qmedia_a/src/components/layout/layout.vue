@@ -9,12 +9,11 @@
           <sider-Bar class="app-siderbar" :opened="opened"></sider-Bar>
         </el-aside>
         <el-main>
-          <div class="page-title">{{title}}</div>
-          <!-- <el-breadcrumb separator="/" v-if="title=='查看发布终端'||title=='创建订单'">
-            <el-breadcrumb-item :to="{ path: '/programManage' }" v-if="title=='查看发布终端'">广告管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/orderManage' }" v-if="title=='创建订单'">订单管理</el-breadcrumb-item>
+          <el-breadcrumb separator="/" v-if="title=='组织机构'">
+            <el-breadcrumb-item :to="{ path: '/business' }" v-if="title=='组织机构'">组织机构</el-breadcrumb-item>
             <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
-          </el-breadcrumb>-->
+          </el-breadcrumb>
+          <div class="page-title" v-else>{{title}}</div>
           <transition :name="transitionName">
             <router-view></router-view>
           </transition>

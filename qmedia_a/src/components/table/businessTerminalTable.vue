@@ -6,7 +6,7 @@
       :columns="columns"
       :props-data="tableData"
       :muti="false"
-      ref="areaTable"
+      ref="businessTable"
       :call-server="callServer"
       @handleSortChange="handleSortChange"
     ></basic-table>
@@ -42,6 +42,11 @@ export default {
     },
     callServer(pagination) {
       return getDevicePage(Object.assign(this.tableParams, pagination));
+    },
+    getData() {
+      this.$refs.businessTable.pagination.page = 0;
+      this.$refs.businessTable.currentPage = 1;
+      this.$refs.businessTable.fecthData();
     }
   }
 };

@@ -2,10 +2,31 @@
   <div>
     <div class="report clearfix">
       <el-col :span="16" v-loading="loading">
-        <order-echart :dataMonth="dataMonth" :id="id" :title="title" :value="value" v-if="flag"></order-echart>
+        <div style="text-align:right">
+          <el-date-picker
+            size="mini"
+            v-model="dateValue"
+            type="monthrange"
+            range-separator="至"
+            start-placeholder="开始月份"
+            end-placeholder="结束月份"
+            value-format="yyyyMM"
+            @change="orderChange"
+            :pickerOptions="pickerOptions"
+          ></el-date-picker>
+        </div>
+        <order-echart
+          :dataMonth="month"
+          :id="id"
+          :title="title"
+          :value="addValue"
+          :paidValue="paidValue"
+          :addCount="addCount"
+          v-if="flag"
+        ></order-echart>
       </el-col>
       <el-col :span="8">
-        <terminal-list></terminal-list>
+        <terminal-list :isSelect="false" @btnClick="btnClick" :lis="lis" :loading="topLoading"></terminal-list>
       </el-col>
     </div>
     <div class="orderReport">
@@ -18,6 +39,7 @@
 import orderEchart from "./terminalTab/orderEchart";
 import terminalList from "./common/terminalList";
 import orderReportTable from "../table/orderReportTable";
+import { getContractReport, getContractTop10 } from "@/api/report";
 export default {
   components: {
     orderEchart,
@@ -26,26 +48,72 @@ export default {
   },
   data() {
     return {
-      dataMonth: [
-        "1月",
-        "2月",
-        "3月",
-        "4月",
-        "5月",
-        "6月",
-        "7月",
-        "8月",
-        "9月",
-        "10月",
-        "11月",
-        "12月"
-      ],
+      month: [],
       flag: false,
-      value: [541, 52, 200, 34, 290, 330, 520, 22, 131, 524, 231, 412],
+      addValue: [],
+      paidValue: [],
       title: "",
       id: "orderReport",
-      loading: true
+      loading: true,
+      addCount: [],
+      searchMonth: {},
+      dateValue: "",
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
+      timeType: 0,
+      lis: [],
+      topLoading: false
     };
+  },
+  methods: {
+    getData() {
+      getContractReport(this.searchMonth).then(res => {
+        this.flag = true;
+        this.loading = false;
+        for (let i in res) {
+          this.paidValue.push((res[i].addMoneyTotal / 100).toFixed(2));
+          this.addValue.push((res[i].paidMoneyTotal / 100).toFixed(2));
+          this.addCount.push(
+            (res[i].paidMoneyTotal / 1000 / res[i].addCount).toFixed(2)
+          );
+          this.month.push(this.$filters.formateDate(String(res[i].month)));
+        }
+      });
+    },
+    getContractTop10Data() {
+      let params = {
+        timeType: this.timeType
+      };
+      this.topLoading = true;
+      getContractTop10(params).then(res => {
+        this.topLoading = false;
+        this.lis = res;
+      });
+    },
+    orderChange(val) {
+      this.flag = false;
+      this.loading = true;
+      this.paidValue = [];
+      this.addValue = [];
+      this.addCount = [];
+      this.month = [];
+      if (val) {
+        this.searchMonth.startMonth = val[0];
+        this.searchMonth.endMonth = val[1];
+        this.getData();
+      } else {
+        this.searchMonth = {};
+        this.getData();
+      }
+    },
+    btnClick(e) {
+      this.timeType = e.value;
+      this.getContractTop10Data(this.timeType);
+    }
+    //列表数据
   },
   mounted() {
     this.loading = true;
@@ -53,6 +121,26 @@ export default {
       this.flag = true;
       this.loading = false;
     }, 600);
+    this.getData();
+    this.getContractTop10Data();
+  },
+  computed: {
+    opened() {
+      return this.$store.state.user.isCollapse;
+    }
+  },
+  watch: {
+    opened(val) {
+      this.flag = false;
+      this.loading = true;
+      this.paidValue = [];
+      this.addValue = [];
+      this.addCount = [];
+      this.month = [];
+      setTimeout(() => {
+        this.getData();
+      }, 200);
+    }
   }
 };
 </script>
@@ -60,6 +148,7 @@ export default {
 <style scoped>
 .report {
   display: flex;
+    height: 400px;
 }
 .report .el-col:nth-child(1) {
   margin-right: 7px;

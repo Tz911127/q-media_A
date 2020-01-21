@@ -82,7 +82,7 @@
       </el-col>
     </div>
     <div class="business">
-      <business-terminal-table @handleSortChange="handleSortChange">
+      <business-terminal-table @handleSortChange="handleSortChange" ref="terminalTable">
         <template slot="tableHeader">
           企业终端
           <span style="font-size:14px;color:#999">(10分钟更新一次)</span>
@@ -140,11 +140,50 @@ export default {
       lis: [],
       topLoading: false,
       rankType: 0,
-      timeType: 0
+      timeType: 0,
+      isTotalSort: 4,
+      onlineSort: 0,
+      offLineSort: 2,
+      tabIndex: 0
     };
+  },
+  computed: {
+    opened() {
+      return this.$store.state.user.isCollapse;
+    }
+  },
+  watch: {
+    opened(val) {
+      if (this.tabIndex == 0) {
+        this.$refs.addTermialNum.flag = false;
+        this.$refs.addTermialNum.loading = true;
+        this.value = [];
+        this.dataMonth = [];
+        setTimeout(() => {
+          this.getDeviceData();
+        }, 200);
+      } else if (this.tabIndex == 1) {
+        this.$refs.termialOnline.flag = false;
+        this.$refs.termialOnline.loading = true;
+        this.secondValue = [];
+        this.secondDataMonth = [];
+        setTimeout(() => {
+          this.getTeminalOnline();
+        }, 200);
+      } else {
+        this.$refs.termialPlay.flag = false;
+        this.$refs.termialPlay.loading = true;
+        this.thirdValue = [];
+        this.thirdDataMonth = [];
+        setTimeout(() => {
+          this.getDevicePlayData();
+        }, 200);
+      }
+    }
   },
   methods: {
     handleClick(tab, event) {
+      this.tabIndex = tab.index;
       if (tab.index == 1) {
         if (this.secondTab) {
           this.getTeminalOnline();
@@ -158,7 +197,31 @@ export default {
       }
     },
     handleSortChange({ column, prop, order }) {
-      console.log(column.label);
+      if (column.label == "终端总数") {
+        if (this.isTotalSort == 5) {
+          this.isTotalSort = 4;
+        } else {
+          this.isTotalSort = 5;
+        }
+        this.$refs.terminalTable.tableParams.sort = this.isTotalSort;
+      }
+      if (column.label == "在线终端") {
+        if (this.onlineSort == 0) {
+          this.onlineSort = 1;
+        } else {
+          this.onlineSort = 0;
+        }
+        this.$refs.terminalTable.tableParams.sort = this.onlineSort;
+      }
+      if (column.label == "离线终端") {
+        if (this.offLineSort == 2) {
+          this.offLineSort = 3;
+        } else {
+          this.offLineSort = 2;
+        }
+        this.$refs.terminalTable.tableParams.sort = this.offLineSort;
+      }
+      this.$refs.terminalTable.getData();
     },
     //新增终端
     getDeviceData() {
@@ -254,9 +317,10 @@ export default {
     btnClick(e) {
       this.timeType = e.value;
       this.getDeviceTop10Data(this.rankType, e.value);
-    },
+    }
     // 列表
   },
+
   mounted() {
     this.getDeviceData();
     this.getDeviceTop10Data(0, 0);

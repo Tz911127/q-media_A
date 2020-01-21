@@ -1,7 +1,7 @@
 import routes from '@/router/routes'
 import {
     setToken,
-    // sort
+    sort
 } from '@/libs/util'
 
 import {
@@ -58,8 +58,7 @@ const user = {
             state.isCollapse = data;
         },
         SET_REGIONTREE: (state, data) => {
-            // sort
-            localStorage.setItem("cities", JSON.stringify((data)));
+            localStorage.setItem("cities", JSON.stringify(sort(data)));
             localStorage.setItem("treeCities", JSON.stringify((data)));
         },
         SET_USERINFO: (state, data) => {

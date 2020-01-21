@@ -6,6 +6,9 @@ import Main from '@/components/layout'
 import homePage from '../views/homePage.vue'
 import system from '../views/system.vue'
 import report from '../views/report.vue'
+import business from '../views/business.vue'
+import org from '../views/org.vue'
+import terminal from '../views/terminal.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
@@ -82,11 +85,33 @@ const routes = [{
                 ]
             },
             {
+                path: "/business",
+                name: 'business',
+                access: '-1',
+                meta: {
+                    title: '企业管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-office-building'
+                },
+                component: business
+            },
+            {
+                path: '/terminal',
+                name: 'terminal',
+                access: '-1',
+                meta: {
+                    title: '终端管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-s-platform',
+                },
+                component: terminal,
+            },
+            {
                 path: '/report',
                 name: 'report',
                 access: '-1',
                 meta: {
-                    title: '系统管理',
+                    title: '数据统计',
                     hideInMenu: false,
                     icon: 'el-icon-s-data',
                 },
@@ -124,6 +149,17 @@ const routes = [{
                         component: dataReport
                     }
                 ]
+            },
+
+            {
+                path: '/org',
+                name: 'org',
+                access: '-1',
+                meta: {
+                    title: '组织机构',
+                    hideInMenu: true,
+                },
+                component: org,
             }
         ]
     },

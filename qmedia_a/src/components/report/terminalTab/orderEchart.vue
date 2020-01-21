@@ -1,17 +1,6 @@
 <template>
   <div>
-    <div style="text-align:right">
-      <el-date-picker
-        size="mini"
-        v-model="dateValue"
-        type="monthrange"
-        range-separator="至"
-        start-placeholder="开始月份"
-        end-placeholder="结束月份"
-        value-format="yyyyMM"
-      ></el-date-picker>
-    </div>
-    <div :id="id" ref="addTerminal" style="height:300px"></div>
+    <div :id="id" ref="addTerminal" style="height:320px"></div>
   </div>
 </template>
 
@@ -25,18 +14,18 @@ export default {
     },
     title: String,
     id: String,
-    value: Array
+    value: Array,
+    paidValue: Array,
+    addCount: Array
   },
   data() {
-    return {
-      dateValue: ""
-    };
+    return {};
   },
   methods: {
     getInit() {
       var myChart = echarts.init(document.getElementById(this.id));
       myChart.setOption({
-        color: ["#4CCA73", "#3398DB"],
+        color: ["#3398DB", "#4CCA73", "red"],
         title: {
           text: this.title
         },
@@ -48,7 +37,7 @@ export default {
           }
         },
         legend: {
-          data: ["新增合同金额", "已付款合同金额"],
+          data: ["新增合同金额", "已付款合同金额", "合同平均金额"],
           icon: "circle",
           bottom: 0
         },
@@ -69,6 +58,14 @@ export default {
         ],
         yAxis: [
           {
+            name: "合同金额",
+            type: "value",
+            axisLine: {
+              show: false
+            }
+          },
+          {
+            name: "合同平均金额",
             type: "value",
             axisLine: {
               show: false
@@ -79,7 +76,6 @@ export default {
           {
             name: "新增合同金额",
             type: "bar",
-            barWidth: "60%",
             data: this.value,
             barWidth: 30,
             stack: "1",
@@ -91,14 +87,20 @@ export default {
           {
             name: "已付款合同金额",
             type: "bar",
-            barWidth: "60%",
-            data: this.value,
+            data: this.paidValue,
             barWidth: 30,
             stack: "1",
             label: {
               show: false,
               position: "insideRight"
             }
+          },
+          {
+            name: "合同平均金额",
+            type: "line",
+            smooth: true,
+            yAxisIndex: 1,
+            data: this.addCount
           }
         ]
       });
