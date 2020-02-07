@@ -138,6 +138,8 @@ export default {
     //图形数据
     getIncrementData() {
       let params = this.month;
+      this.$refs.terminalAdd.flag = false;
+      this.$refs.terminalAdd.loading = true;
       getProgramIncrement(params).then(res => {
         this.$refs.terminalAdd.flag = true;
         this.$refs.terminalAdd.loading = false;

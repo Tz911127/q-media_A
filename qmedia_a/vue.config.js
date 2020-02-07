@@ -22,8 +22,8 @@ module.exports = {
         open: false,
         proxy: {
             '/api': {
-                // target: 'https://sys.q-media.red', //后端接口地址
-                target: 'http://192.168.1.126:9000', //后端接口地址
+                target: 'https://sys.q-media.red', //后端接口地址
+                // target: 'http://192.168.1.126:9000', //后端接口地址
                 changeOrigin: true, //是否允许跨越
                 secure: true,
                 pathRewrite: {

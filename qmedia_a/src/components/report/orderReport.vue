@@ -70,6 +70,8 @@ export default {
   },
   methods: {
     getData() {
+      this.flag = false;
+      this.loading = true;
       getContractReport(this.searchMonth).then(res => {
         this.flag = true;
         this.loading = false;
@@ -148,7 +150,7 @@ export default {
 <style scoped>
 .report {
   display: flex;
-    height: 400px;
+  height: 400px;
 }
 .report .el-col:nth-child(1) {
   margin-right: 7px;

@@ -65,6 +65,16 @@
           </div>
           <transition name="slide-fade">
             <div v-if="slideFade" style="margin:15px 0">
+              <v-city
+                style="width: 160px;margin-right:15px;display:inline-block"
+                @handleChange="handleChange"
+              ></v-city>
+              <v-selectRes
+                :placeholder="`分辨率`"
+                @optionChange="resoleChange"
+                :options="resolutes"
+                style="width: 160px;margin-right:15px"
+              ></v-selectRes>
               <v-select
                 :placeholder="`删除状态`"
                 @optionChange="deleteChange"
@@ -92,8 +102,37 @@
             </div>
           </transition>
         </div>
+        <div style="margin:15px 0">
+          <el-tooltip
+            effect="dark"
+            content="请选择终端"
+            placement="top-start"
+            style="margin-right:15px "
+          >
+            <el-popover placement="bottom" width="50" trigger="click">
+              <el-button style="margin-left:10px" type="text">截屏</el-button>
+              <el-button type="text">重启</el-button>
+              <el-button type="text">磁盘清理</el-button>
+              <el-button type="text" size="mini">获取运行日志</el-button>
+              <el-button slot="reference" type="success">
+                发布命令
+                <i class="el-icon-arrow-down"></i>
+              </el-button>
+            </el-popover>
+          </el-tooltip>
+          <v-tooltip :content="`终端升级`" :type="`success`" :onSubmit="terminalUsing"></v-tooltip>
+          <v-tooltip :content="`终端启用`" :type="`success`" :onSubmit="terminalUsing"></v-tooltip>
+          <v-tooltip :content="`设置开关机时间`" :type="`warning`" :onSubmit="terminalUsing"></v-tooltip>
+          <v-tooltip :content="`设置音量`" :type="`warning`" :onSubmit="terminalUsing"></v-tooltip>
+          <v-tooltip :content="`终端停用`" :type="`danger`" :onSubmit="terminalUsing"></v-tooltip>
+          <!-- <el-button type="warning">设置开关机时间</el-button>
+          <el-button type="warning">设置音量</el-button>
+          <el-button type="danger">终端停用</el-button> -->
+        </div>
       </template>
     </basic-table>
+    <!-- 弹窗 -->
+    <v-dialog ref="terDialog"></v-dialog>
   </div>
 </template>
 
@@ -156,6 +195,12 @@ export default {
                 title: "播放管理",
                 icon: "el-icon-video-play",
                 method: () => this.playDevice(row)
+              },
+              {
+                isShow: true,
+                title: "删除",
+                icon: "el-icon-delete",
+                method: () => this.delDevice(row)
               }
             ];
             return h("table-operate", {
@@ -205,7 +250,7 @@ export default {
         { name: "未升级", val: "0" },
         { name: "已升级", val: "1" }
       ],
-      resolutes:[]
+      resolutes: []
     };
   },
   methods: {
@@ -218,6 +263,7 @@ export default {
       this.$refs.terminalTable.fecthData();
     },
     playDevice(row) {},
+    delDevice(row) {},
     search() {
       this.tableParams.snOrName = this.searchItem.snOrName;
       this.tableParams.adaptVersion = this.searchItem.adaptVersion;
@@ -256,6 +302,27 @@ export default {
     adaptVerUpChange(val) {
       this.tableParams.adaptVerUpStatus = val;
       this.search();
+    },
+    handleChange(val) {
+      if (val.length == 1) {
+        this.tableParams.province = val[0];
+        this.tableParams.city = "";
+        this.tableParams.district = "";
+      } else if (val.length == 2) {
+        this.tableParams.province = val[0];
+        this.tableParams.city = val[1];
+        this.tableParams.district = "";
+      } else {
+        this.tableParams.province = val[0];
+        this.tableParams.city = val[1];
+        this.tableParams.district = val[2];
+      }
+      this.search();
+    },
+    resoleChange(val) {
+      this.tableParams.resolutionH = val.split("*")[0];
+      this.tableParams.resolutionV = val.split("*")[1];
+      this.search();
     }
   },
   mounted() {
@@ -282,5 +349,10 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
+}
+.el-popover button {
+  display: block;
+  width: 100%;
+  text-align: left;
 }
 </style>
