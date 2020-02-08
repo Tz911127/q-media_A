@@ -5,6 +5,7 @@
       :columns="columns"
       :props-data="tableData"
       ref="terminalTable"
+      @selectionChange="selectionChange"
     >
       <template slot="tableHeader">
         <div style="margin:15px 0">
@@ -105,43 +106,88 @@
         <div style="margin:15px 0">
           <el-tooltip
             effect="dark"
-            content="请选择终端"
+            content="请选择在线终端"
             placement="top-start"
+            :disabled="!disabled"
             style="margin-right:15px "
           >
-            <el-popover placement="bottom" width="50" trigger="click">
+            <el-popover placement="bottom" width="50" trigger="click" :disabled="disabled">
               <el-button style="margin-left:10px" type="text">截屏</el-button>
               <el-button type="text">重启</el-button>
               <el-button type="text">磁盘清理</el-button>
               <el-button type="text" size="mini">获取运行日志</el-button>
-              <el-button slot="reference" type="success">
+              <el-button slot="reference" type="success" :disabled="disabled">
                 发布命令
                 <i class="el-icon-arrow-down"></i>
               </el-button>
             </el-popover>
           </el-tooltip>
-          <v-tooltip :content="`终端升级`" :type="`success`" :onSubmit="terminalUsing"></v-tooltip>
-          <v-tooltip :content="`终端启用`" :type="`success`" :onSubmit="terminalUsing"></v-tooltip>
-          <v-tooltip :content="`设置开关机时间`" :type="`warning`" :onSubmit="terminalUsing"></v-tooltip>
-          <v-tooltip :content="`设置音量`" :type="`warning`" :onSubmit="terminalUsing"></v-tooltip>
-          <v-tooltip :content="`终端停用`" :type="`danger`" :onSubmit="terminalUsing"></v-tooltip>
-          <!-- <el-button type="warning">设置开关机时间</el-button>
-          <el-button type="warning">设置音量</el-button>
-          <el-button type="danger">终端停用</el-button> -->
+          <v-tooltip :content="`终端升级`" :type="`success`" :onSubmit="devicesUp" :disabled="disabled"></v-tooltip>
+          <v-tooltip
+            :content="`终端启用`"
+            :disabled="disabled"
+            :type="`success`"
+            :onSubmit="devicesEnable"
+          ></v-tooltip>
+          <v-tooltip
+            :content="`设置开关机时间`"
+            :disabled="disabled"
+            :type="`warning`"
+            :onSubmit="setTime"
+          ></v-tooltip>
+          <v-tooltip :content="`设置音量`" :disabled="disabled" :type="`warning`" :onSubmit="setVolue"></v-tooltip>
+          <v-tooltip
+            :content="`终端停用`"
+            :disabled="disabled"
+            :type="`danger`"
+            :onSubmit="devicesUnEnable"
+          ></v-tooltip>
         </div>
       </template>
     </basic-table>
     <!-- 弹窗 -->
-    <v-dialog ref="terDialog"></v-dialog>
+    <v-dialog
+      ref="terDialog"
+      :title="title == 0?'开关机时间':title == 1?'音量设置':title == 2?'终端升级':title == 3?'':''"
+      :width="title==2?`70%`:`50%`"
+      @handleClose="handleClose"
+      :showFooter="title==2?false:true"
+    >
+      <set-times v-if="title==0" ref="setTimes"></set-times>
+      <set-volume v-if="title==1" ref="setVolume"></set-volume>
+      <terminal-up-table
+        v-if="title==2"
+        :dialogData="dialogData"
+        :dialogTotal="dialogTotal"
+        :loading="dialogLoading"
+        ref="terminalUp"
+        @handleSizeChange="handleSizeChange"
+        @handleCurrentChange="handleCurrentChange"
+        @upDevice="upDevice"
+      ></terminal-up-table>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import basicTable from "./components/basicTable";
-import { getDevicePage } from "@/api/terminal";
+import setTimes from "../form/setTimes";
+import setVolume from "../form/setVolume";
+import terminalUpTable from "./terminalUpTable";
+import {
+  getDevicePage,
+  enableDevice,
+  deviceWorkCron,
+  setVolumes,
+  getVersionFile,
+  getDeviceVersion
+} from "@/api/terminal";
 export default {
   components: {
-    basicTable
+    basicTable,
+    setTimes,
+    setVolume,
+    terminalUpTable
   },
   data() {
     let cities = JSON.parse(localStorage.getItem("cities"));
@@ -250,7 +296,17 @@ export default {
         { name: "未升级", val: "0" },
         { name: "已升级", val: "1" }
       ],
-      resolutes: []
+      resolutes: [],
+      disabled: true,
+      selectList: [],
+      title: 0,
+      dialogParams: {
+        limit: 10,
+        page: 0
+      },
+      dialogData: [],
+      dialogTotal: 0,
+      dialogLoading: true
     };
   },
   methods: {
@@ -323,6 +379,184 @@ export default {
       this.tableParams.resolutionH = val.split("*")[0];
       this.tableParams.resolutionV = val.split("*")[1];
       this.search();
+    },
+    //终端升级
+    devicesUp() {
+      this.title = 2;
+      this.dialogParams = {
+        limit: 10,
+        page: 0
+      };
+      this.getVersionFileData();
+    },
+    getVersionFileData() {
+      getVersionFile(this.dialogParams).then(res => {
+        this.dialogData = res.data;
+        this.dialogTotal = res.total;
+        this.dialogLoading = false;
+        this.$refs.terDialog.dialogVisible = true;
+      });
+    },
+    handleSizeChange(val) {
+      this.dialogParams.limit = val;
+      this.dialogLoading = true;
+      getVersionFile(this.dialogParams).then(res => {
+        this.dialogLoading = false;
+        this.dialogData = res.data;
+        this.$refs.terminalUp.tableData = res.data;
+      });
+    },
+    handleCurrentChange(val) {
+      this.dialogParams.page = val - 1;
+      this.dialogLoading = true;
+      getVersionFile(this.dialogParams).then(res => {
+        this.dialogLoading = false;
+        this.dialogData = res.data;
+        this.$refs.terminalUp.tableData = res.data;
+      });
+    },
+    upDevice(row) {
+      let deviceIds = [];
+      this.selectList.map(val => {
+        deviceIds.push(val.id);
+      });
+      let params = {
+        versionFileId: row.id,
+        deviceIds: deviceIds
+      };
+      getDeviceVersion(params).then(res => {
+        this.toast("操作成功", "success");
+        this.$refs.terDialog.dialogVisible = false;
+        this.getData();
+      });
+    },
+    //终端启用
+    devicesEnable() {
+      this.enabled(1);
+    },
+    //终端停用
+    devicesUnEnable() {
+      this.enabled(0);
+    },
+    enabled(e) {
+      let that = this;
+      let idList = [];
+      this.selectList.map(val => {
+        idList.push(val.id);
+      });
+      this.confirm(`是否` + (e == 1 ? "启用" : "停用") + `终端？`, "", {
+        request: () => {
+          let params = {
+            idList: idList,
+            enable: e
+          };
+          return enableDevice(params);
+        },
+        success() {
+          that.getData();
+          that.toast("操作成功", "success");
+        }
+      });
+    },
+    setTime() {
+      this.$refs.terDialog.dialogVisible = true;
+      this.title = 0;
+    },
+    setVolue() {
+      this.$refs.terDialog.dialogVisible = true;
+      this.title = 1;
+    },
+    handleClose() {
+      if (this.title == 0) {
+        let startTime = this.$refs.setTimes.startTime;
+        let endTime = this.$refs.setTimes.endTime;
+        let ids = "";
+        this.selectList.map(val => {
+          ids += val.id + ",";
+        });
+        if (startTime == "" || endTime == "") {
+          this.$message.error("时间不能为空");
+          return;
+        }
+        if (startTime > endTime) {
+          this.$message.error("开始时间不能大于结束时间");
+          return;
+        }
+        let workCron = startTime + "-" + endTime;
+        let params = {
+          idLists: ids,
+          time: workCron
+        };
+        deviceWorkCron(params).then(res => {
+          this.getData();
+          this.toast("操作成功", "success");
+          this.$refs.terDialog.dialogVisible = false;
+        });
+      } else if (this.title == 1) {
+        let idList = [];
+        this.selectList.map(val => {
+          idList.push(val.id);
+        });
+        let val = this.$refs.setVolume.timeForm.voice;
+        let domains = this.$refs.setVolume.timeForm.domains;
+        this.$refs.setVolume.validate(data => {
+          let period = [];
+          for (let i = 0; i < domains.length; i++) {
+            if (
+              domains[i].voice == "" ||
+              domains[i].voice > 100 ||
+              domains[i].voice < 0
+            ) {
+              this.$message.error("请设置音量/0-100整数");
+              return;
+            }
+            let obj = {};
+            obj.t = domains[i].time[0] + "-" + domains[i].time[1];
+            obj.v = domains[i].voice;
+            period.push(obj);
+          }
+          if (domains.length == 2) {
+            for (let i = 0; i < domains.length; i++) {
+              let start = domains[i].time[0];
+              let end = domains[i].time[1];
+              for (let j = i + 1; j < domains.length; j++) {
+                let startJ = domains[j].time[0];
+                let endJ = domains[j].time[1];
+                if (startJ > start) {
+                  start = startJ;
+                }
+                if (endJ < end) {
+                  end = endJ;
+                }
+                if (start < end) {
+                  this.$message.error("时间段不能交叉");
+                  return;
+                }
+              }
+            }
+          }
+          let params = {
+            idList: idList,
+            volumeTarget: {
+              val: val,
+              period: period
+            }
+          };
+          setVolumes(params).then(() => {
+            this.getData();
+            this.toast("操作成功", "success");
+            this.$refs.terDialog.dialogVisible = false;
+          });
+        });
+      }
+    },
+    selectionChange(val) {
+      this.selectList = val;
+      if (val.length != 0) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
     }
   },
   mounted() {

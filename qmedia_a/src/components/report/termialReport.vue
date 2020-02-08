@@ -228,12 +228,12 @@ export default {
       this.$refs.addTermialNum.flag = false;
       this.$refs.addTermialNum.loading = true;
       getDeviceReport(this.month).then(res => {
+        this.$refs.addTermialNum.flag = true;
+        this.$refs.addTermialNum.loading = false;
         for (let i in res) {
           this.value.push(res[i].count);
           this.dataMonth.push(this.$filters.formateDate(res[i].m));
         }
-        this.$refs.addTermialNum.flag = true;
-        this.$refs.addTermialNum.loading = false;
       });
     },
     addTerminalChange(val) {
