@@ -22,6 +22,7 @@
               :dataMonth="dataMonth"
               :value="value"
               :title="`新增广告`"
+              :flag="addAD"
               ref="terminalAdd"
             ></terminal-add>
           </el-tab-pane>
@@ -44,6 +45,7 @@
               :dataMonth="playDataMonth"
               :value="playValue"
               :title="`广告时长/小时`"
+              :flag="ADtimeFlag"
               ref="terminalOnline"
             ></terminal-add>
           </el-tab-pane>
@@ -107,7 +109,9 @@ export default {
         { label: "新增广告排名", value: 0 },
         { label: "广告在线时长排名", value: 1 }
       ],
-      tabIndex: 0
+      tabIndex: 0,
+      addAD: false,
+      ADtimeFlag: false
     };
   },
   computed: {
@@ -139,10 +143,10 @@ export default {
     getIncrementData() {
       let params = this.month;
       this.$refs.terminalAdd.loading = true;
-      this.$refs.terminalAdd.flag = false;
+      this.addAD = false;
       getProgramIncrement(params).then(res => {
         this.$refs.terminalAdd.loading = false;
-        this.$refs.terminalAdd.flag = true;
+        this.addAD = true;
         for (let i in res) {
           this.value.push(res[i].count);
           this.dataMonth.push(this.$filters.formateDate(res[i].m));
@@ -152,7 +156,7 @@ export default {
     getPlayPage() {
       let params = this.playMonth;
       getProgramDuration(params).then(res => {
-        this.$refs.terminalOnline.flag = true;
+        this.ADtimeFlag = true;
         this.$refs.terminalOnline.loading = false;
         for (let i in res) {
           this.playValue.push((res[i].duration / 3600).toFixed(2));
@@ -168,7 +172,6 @@ export default {
       }
     },
     addChange(val) {
-      this.$refs.terminalAdd.flag = false;
       this.$refs.terminalAdd.loading = true;
       this.value = [];
       this.dataMonth = [];
@@ -182,7 +185,6 @@ export default {
       }
     },
     playAddChange(val) {
-      this.$refs.terminalOnline.flag = false;
       this.$refs.terminalOnline.loading = true;
       this.playValue = [];
       this.playDataMonth = [];

@@ -43,3 +43,24 @@ export const getDeviceVersion = (data) => {
         method: 'post'
     })
 }
+export const delDeviceFile = (params) => {
+    return axios.request({
+        url: '/api/device/' + params.id,
+        params: {},
+        method: 'delete'
+    })
+}
+export const terminalDetail = (params) => {
+    return axios.request({
+        url: "/api/device/" + params.id,
+        params: {},
+        method: 'get'
+    })
+}
+export const terminalOrder = (params) => {
+    return axios.request({
+        url: '/api/device/command/page',
+        params: params,
+        method: 'get'
+    })
+}

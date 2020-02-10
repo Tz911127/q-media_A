@@ -13,12 +13,16 @@ export default {
   props: {
     dataMonth: Array,
     value: Array,
-    title: String
+    title: String,
+    flag: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {
     return {
-      flag: false,
+      // flag: false,
       id: "addTerminal",
       loading: true
     };
@@ -26,7 +30,7 @@ export default {
 
   mounted() {
     setTimeout(() => {
-      this.flag = true;
+      // this.flag = true;
       this.loading = false;
     }, 500);
   }

@@ -180,7 +180,8 @@ import {
   deviceWorkCron,
   setVolumes,
   getVersionFile,
-  getDeviceVersion
+  getDeviceVersion,
+  delDeviceFile
 } from "@/api/terminal";
 export default {
   components: {
@@ -197,7 +198,7 @@ export default {
           label: "终端编号",
           render: (h, row) => {
             return (
-              <div>
+              <div onClick={() => this.terminalDetail(row)}>
                 <span class="btn-detail">{row.sn}</span>
                 <span class="txt-red">
                   {row.exception == 1 ? "(异常)" : ""}
@@ -243,7 +244,7 @@ export default {
                 method: () => this.playDevice(row)
               },
               {
-                isShow: true,
+                isShow: row.del == 1 ? false : true,
                 title: "删除",
                 icon: "el-icon-delete",
                 method: () => this.delDevice(row)
@@ -319,7 +320,18 @@ export default {
       this.$refs.terminalTable.fecthData();
     },
     playDevice(row) {},
-    delDevice(row) {},
+    delDevice(row) {
+      let that = this;
+      this.confirm(`确定删除终端：` + row.name, "删除", {
+        request: () => {
+          return delDeviceFile(row);
+        },
+        success() {
+          that.getData();
+          that.toast("操作成功", "success");
+        }
+      });
+    },
     search() {
       this.tableParams.snOrName = this.searchItem.snOrName;
       this.tableParams.adaptVersion = this.searchItem.adaptVersion;
@@ -557,6 +569,9 @@ export default {
       } else {
         this.disabled = true;
       }
+    },
+    terminalDetail(row) {
+      this.$emit("terminalDetail", row);
     }
   },
   mounted() {

@@ -22,6 +22,7 @@
               :dataMonth="dataMonth"
               :value="value"
               :title="`新增终端数`"
+              :flag="addFlag"
               ref="addTermialNum"
             ></terminal-add>
           </el-tab-pane>
@@ -44,6 +45,7 @@
               :dataMonth="secondDataMonth"
               :value="secondValue"
               :title="`终端在线时长`"
+              :flag="onlineFlag"
               ref="termialOnline"
             ></terminal-add>
           </el-tab-pane>
@@ -66,6 +68,7 @@
               :dataMonth="thirdDataMonth"
               :value="thirdValue"
               :title="`终端在线时长`"
+              :flag="playFlag"
               ref="termialPlay"
             ></terminal-add>
           </el-tab-pane>
@@ -144,7 +147,10 @@ export default {
       isTotalSort: 4,
       onlineSort: 0,
       offLineSort: 2,
-      tabIndex: 0
+      tabIndex: 0,
+      addFlag: false,
+      onlineFlag: false,
+      playFlag: false
     };
   },
   computed: {
@@ -225,10 +231,10 @@ export default {
     },
     //新增终端
     getDeviceData() {
-      this.$refs.addTermialNum.flag = false;
+      this.addFlag = false;
       this.$refs.addTermialNum.loading = true;
       getDeviceReport(this.month).then(res => {
-        this.$refs.addTermialNum.flag = true;
+        this.addFlag = true;
         this.$refs.addTermialNum.loading = false;
         for (let i in res) {
           this.value.push(res[i].count);
@@ -237,7 +243,7 @@ export default {
       });
     },
     addTerminalChange(val) {
-      this.$refs.addTermialNum.flag = false;
+      this.addFlag = false;
       this.$refs.addTermialNum.loading = true;
       this.value = [];
       this.dataMonth = [];
@@ -252,8 +258,9 @@ export default {
     },
     //终端在线时长
     getTeminalOnline() {
+      this.onlineFlag = false;
       getDeviceOnline(this.secondMonth).then(res => {
-        this.$refs.termialOnline.flag = true;
+        this.onlineFlag = true;
         this.$refs.termialOnline.loading = false;
         for (let i in res) {
           this.secondValue.push((res[i].duration / 3600 / 1000).toFixed(2));
@@ -262,7 +269,7 @@ export default {
       });
     },
     terminalOnlineChange(val) {
-      this.$refs.termialOnline.flag = false;
+      this.onlineFlag = false;
       this.$refs.termialOnline.loading = true;
       this.secondValue = [];
       this.secondDataMonth = [];
@@ -277,8 +284,9 @@ export default {
     },
     //终端播放时长
     getDevicePlayData() {
+      this.playFlag = false;
       getDevicePlay(this.thirdMonth).then(res => {
-        this.$refs.termialPlay.flag = true;
+        this.playFlag = true;
         this.$refs.termialPlay.loading = false;
         for (let i in res) {
           this.thirdValue.push((res[i].duration / 3600).toFixed(2));
@@ -287,7 +295,6 @@ export default {
       });
     },
     terminalPlayChange(val) {
-      this.$refs.termialPlay.flag = false;
       this.$refs.termialPlay.loading = true;
       this.thirdValue = [];
       this.thirdDataMonth = [];

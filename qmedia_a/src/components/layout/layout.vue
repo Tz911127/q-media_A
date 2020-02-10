@@ -9,11 +9,14 @@
           <sider-Bar class="app-siderbar" :opened="opened"></sider-Bar>
         </el-aside>
         <el-main>
-          <el-breadcrumb separator="/" v-if="title=='组织机构'">
-            <el-breadcrumb-item :to="{ path: '/business' }" v-if="title=='组织机构'">组织机构</el-breadcrumb-item>
-            <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
-          </el-breadcrumb>
-          <div class="page-title" v-else>{{title}}</div>
+          <div v-if="isDetail">
+            <el-breadcrumb separator="/" v-if="title=='组织机构'">
+              <el-breadcrumb-item :to="{ path: '/business' }" v-if="title=='组织机构'">组织机构</el-breadcrumb-item>
+              <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+            </el-breadcrumb>
+
+            <div class="page-title" v-else>{{title}}</div>
+          </div>
           <transition :name="transitionName">
             <router-view></router-view>
           </transition>
@@ -44,6 +47,11 @@ export default {
       return this.$store.state.user.isCollapse;
     }
   },
+  created() {
+    this.$root.eventHub.$on("isDetail", isDetail => {
+      this.isDetail = isDetail;
+    });
+  },
   watch: {
     $route() {
       // let isBack = this.$router.isBack;
@@ -54,6 +62,7 @@ export default {
       // }
       // this.$router.isBack = false;
       this.title = this.$route.meta.title;
+      this.isDetail = true;
     }
   },
   mounted() {
