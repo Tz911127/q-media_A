@@ -9,18 +9,8 @@
     >
       <template slot="tableHeader">
         <div style="margin:15px 0">
-          <v-select
-            :placeholder="`运行状态`"
-            @optionChange="excepteChange"
-            :options="exceptes"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`在线状态`"
-            @optionChange="statesChange"
-            :options="states"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`运行状态`" @optionChange="excepteChange" :options="exceptes"></v-select>
+          <v-select :placeholder="`在线状态`" @optionChange="statesChange" :options="states"></v-select>
 
           <el-button style="float:right;" type="text" @click="onOpen">
             展开
@@ -73,32 +63,20 @@
               <v-selectRes
                 :placeholder="`分辨率`"
                 @optionChange="resoleChange"
+                style="width: 160px;margin-right:15px"
                 :options="resolutes"
-                style="width: 160px;margin-right:15px"
               ></v-selectRes>
-              <v-select
-                :placeholder="`删除状态`"
-                @optionChange="deleteChange"
-                :options="dels"
-                style="width: 160px;margin-right:15px"
-              ></v-select>
-              <v-select
-                :placeholder="`停用状态`"
-                @optionChange="enabledChange"
-                :options="enableds"
-                style="width: 160px;margin-right:15px"
-              ></v-select>
+              <v-select :placeholder="`删除状态`" @optionChange="deleteChange" :options="dels"></v-select>
+              <v-select :placeholder="`停用状态`" @optionChange="enabledChange" :options="enableds"></v-select>
               <v-select
                 :placeholder="`播放版本升级状态`"
                 @optionChange="appVerUpChange"
                 :options="appVerUpStatuses"
-                style="width: 160px;margin-right:15px"
               ></v-select>
               <v-select
                 :placeholder="`适配版本升级状态`"
                 @optionChange="adaptVerUpChange"
                 :options="appVerUpStatuses"
-                style="width: 160px;margin-right:15px"
               ></v-select>
             </div>
           </transition>

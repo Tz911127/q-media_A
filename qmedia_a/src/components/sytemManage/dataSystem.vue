@@ -3,15 +3,15 @@
     <el-form ref="form" :model="form" label-width="80px" class="form">
       <el-form-item label="图片格式">
         <el-input type="textarea" v-model="form.imageFormat"></el-input>
-        <span class="el-upload__tip">小写字母，多个格式用,分隔</span>
+        <span class="el-upload__tip" style="display:block">小写字母，多个格式用,分隔</span>
       </el-form-item>
       <el-form-item label="视频格式">
         <el-input type="textarea" v-model="form.videoFormat"></el-input>
-        <span class="el-upload__tip">小写字母，多个格式用,分隔</span>
+        <span class="el-upload__tip" style="display:block">小写字母，多个格式用,分隔</span>
       </el-form-item>
       <el-form-item label="分辨率">
         <el-input type="textarea" v-model="form.resolutions"></el-input>
-        <span class="el-upload__tip">小写字母，多个格式用,分隔</span>
+        <span class="el-upload__tip" style="display:block">小写字母，多个格式用,分隔</span>
       </el-form-item>
       <!-- v-if="perms('111')" -->
       <el-form-item>
@@ -70,5 +70,8 @@ export default {
 .form {
   width: 50%;
   margin: auto;
+}
+.form .el-form-item {
+  width: 100%;
 }
 </style>

@@ -9,6 +9,7 @@ import report from '../views/report.vue'
 import business from '../views/business.vue'
 import org from '../views/org.vue'
 import terminal from '../views/terminal.vue'
+import meterial from '../views/meterial.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
@@ -105,6 +106,17 @@ const routes = [{
                     icon: 'el-icon-s-platform',
                 },
                 component: terminal,
+            },
+            {
+                path: '/meterial',
+                name: 'meterial',
+                access: '-1',
+                meta: {
+                    title: '素材管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-s-management',
+                },
+                component: meterial,
             },
             {
                 path: '/report',

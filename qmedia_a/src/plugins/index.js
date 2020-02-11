@@ -52,6 +52,19 @@ export default {
                 sort(data) {
                     sort(data)
                 },
+                imgPathFormate(src) {
+                    if (src) {
+                        return this.userInfo.cdnImgUrl + src
+                    }
+                },
+                getVideoPoster(src) {
+                    return this.imgPathFormate(src) + '.jpg'
+                },
+                videoPathFormate(src) {
+                    if (src) {
+                        return this.userInfo.cdnVideoUrl + src
+                    }
+                },
             }
         })
     }

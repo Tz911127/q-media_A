@@ -8,8 +8,23 @@
       ref="terminalOrderTable"
     >
       <template slot="tableHeader">
-        <div style="15px 0">
-            
+        <div style="margin:15px 0">
+          <v-select :placeholder="`命令名称`" @optionChange="orderChange" :options="orders"></v-select>
+          <v-select :placeholder="`状态`" @optionChange="statusChange" :options="statuses"></v-select>
+          <el-button
+            style="float:right;margin-right:10px"
+            type="warning"
+            icon="el-icon-search"
+            @click="search"
+          >查询</el-button>
+          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+            <el-input
+              placeholder="操作账户"
+              v-model.trim="account"
+              @keyup.enter.native="search"
+              clearable
+            ></el-input>
+          </div>
         </div>
       </template>
     </basic-table>
@@ -67,7 +82,19 @@ export default {
           }
         }
       ],
-      tableData: []
+      tableData: [],
+      orders: [
+        { name: "截屏", val: "0" },
+        { name: "重启", val: "1" },
+        { name: "获取运行日志", val: "2" },
+        { name: "磁盘清理", val: "4" }
+      ],
+      statuses: [
+        { name: "失败", val: "0" },
+        { name: "成功", val: "1" },
+        { name: "待执行", val: "2" }
+      ],
+      account: ""
     };
   },
   methods: {
@@ -78,6 +105,18 @@ export default {
     },
     callServer(pagination) {
       return terminalOrder(Object.assign(this.tableParams, pagination));
+    },
+    orderChange(val) {
+      this.tableParams.type = val;
+      this.search();
+    },
+    statusChange(val) {
+      this.tableParams.status = val;
+      this.search();
+    },
+    search() {
+      this.tableParams.account = this.account;
+      this.getData();
     }
   },
   mounted() {}

@@ -100,4 +100,27 @@ export function filterTerminal(name, type) {
         return name.substring(0, len) + '(' + filterTime(Number(newName)) + ')'
     }
 
+
+
+}
+
+//素材状态
+export function filterStatus(num) {
+    if (num == 0) {
+        return "待提交审核";
+    } else if (num == 1) {
+        return "审核成功";
+    } else if (num == 2) {
+        return "内部审核中";
+    } else if (num == 3) {
+        return "平台审核中";
+    } else if (num == 4) {
+        return "内部审核失败";
+    } else if (num == 5) {
+        return "平台审核失败";
+    } else if (num == 6) {
+        return "转码中";
+    } else if (num == 7) {
+        return "转码失败";
+    }
 }
