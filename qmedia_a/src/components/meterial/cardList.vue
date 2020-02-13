@@ -2,16 +2,25 @@
   <div v-loading="loading">
     <!-- 查询 -->
     <div style="margin:15px 0 ">
-      <v-select :placeholder="`素材状态`" @optionChange="typeChange" :options="types"></v-select>
+      <v-select :placeholder="`素材类型`" @optionChange="typeChange" :options="types"></v-select>
       <v-select :placeholder="`素材状态`" @optionChange="statusChange" :options="statuses"></v-select>
       <v-select :placeholder="`删除状态`" @optionChange="delChange" :options="deletes"></v-select>
       <v-select :placeholder="`停用状态`" @optionChange="enabledChange" :options="enableds"></v-select>
       <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
+
       <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
         <el-input placeholder="素材名称" v-model.trim="name" @keyup.enter.native="search" clearable></el-input>
       </div>
       <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
         <el-input placeholder="企业代码" v-model.trim="ck" @keyup.enter.native="search" clearable></el-input>
+      </div>
+    </div>
+    <div style="margin:15px 0">
+      <el-button type="primary" v-if="!disabled" @click="check">批量操作</el-button>
+      <div v-if="disabled">
+        <el-button @click="check">取消批量</el-button>
+        <el-button type="primary" @click="checkEnable(1)">素材启用</el-button>
+        <el-button type="danger" @click="checkEnable(0)">素材停用</el-button>
       </div>
     </div>
     <el-row style="margin:-7.5px">
@@ -32,6 +41,13 @@
             >{{o.status |filterStatus(o.currentLevelName)}}</span>
             <span class="del_1 delStyle" v-if="o.enabled==0">已停用</span>
             <span class="del delStyle" v-if="o.del==1">已删除</span>
+
+            <el-checkbox
+              v-if="disabled"
+              :disabled="!disabled"
+              class="check"
+              @change="handleCheckedCitiesChange(o)"
+            ></el-checkbox>
             <div class="review" v-show="active == index">
               <div class="review_flex">
                 <span @click.stop="reviewDetail(1,o)">预览</span>
@@ -66,13 +82,27 @@
     ></el-pagination>
 
     <!-- 弹窗 -->
-    <v-dialog ref="meterialDialog" :showFooter="false" title="素材预览"></v-dialog>
+    <v-dialog ref="meterialDialog" :width="`50%`" @closed="closed" :showFooter="false" title="素材预览">
+      <meterial-form :data="meterialForm" @click="click"></meterial-form>
+    </v-dialog>
+    <div class="image-view" v-if="flag" @click="click">
+      <div class="img-box">
+        <img :src="imgPathFormate(meterialForm.path)" width="100%" height="100%" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { getMeterialPage } from "@/api/meterial";
+import {
+  getMeterialPage,
+  patchMaterial,
+  getMaterialDetail
+} from "@/api/meterial";
+import meterialForm from "@/components/form/meterialForm";
+import screenfull from "screenfull";
 export default {
+  components: { meterialForm },
   data() {
     return {
       cardData: [],
@@ -117,9 +147,15 @@ export default {
         { name: "未停用", val: 1 }
       ],
       name: "",
-      ck: ""
+      ck: "",
+      disabled: false,
+      checked: "false",
+      ids: [],
+      meterialForm: {},
+      flag: false
     };
   },
+
   methods: {
     getData() {
       let params = this.tableParams;
@@ -136,8 +172,14 @@ export default {
     mouseLeave() {
       this.active = -1;
     },
-    reviewDetail() {
-      this.$refs.meterialDialog.dialogVisible = true;
+    reviewDetail(i, val) {
+      getMaterialDetail(val).then(res => {
+        this.$refs.meterialDialog.dialogVisible = true;
+        this.meterialForm = res;
+      });
+    },
+    closed() {
+      this.meterialForm.path = "";
     },
     handleSizeChange(val) {
       this.tableParams.limit = val;
@@ -168,6 +210,50 @@ export default {
       this.tableParams.name = this.name;
       this.tableParams.ck = this.ck;
       this.getData();
+    },
+    check() {
+      this.disabled = !this.disabled;
+      if (this.disabled) {
+        this.ids = [];
+      }
+    },
+    handleCheckedCitiesChange(value) {
+      if (this.ids.indexOf(value.id) == -1) {
+        this.ids.push(value.id);
+      } else {
+        for (let i = 0; i < this.ids.length; i++) {
+          if (this.ids[i] == value.id) {
+            this.ids.splice(i, 1);
+            break;
+          }
+        }
+      }
+    },
+    checkEnable(val) {
+      if (this.ids.length == 0) {
+        this.toast("请选择素材", "error");
+        return;
+      }
+      let params = {
+        idList: this.ids,
+        enable: val
+      };
+      patchMaterial(params).then(res => {
+        this.getData();
+        this.toast("操作成功", "success");
+        this.ids = [];
+        this.disabled = false;
+      });
+    },
+    click() {
+      screenfull.toggle();
+      screenfull.on("change", () => {
+        if (screenfull.isFullscreen) {
+          this.flag = true;
+        } else {
+          this.flag = false;
+        }
+      });
     }
   },
   mounted() {

@@ -64,6 +64,7 @@ export default {
     },
     closed() {
       this.posting = false;
+      this.$emit("closed");
       // this.$store.state.material.detailData = {};
       // this.$store.commit('CLEAR_PROGRAM_CONTENT')
     },
@@ -74,6 +75,7 @@ export default {
     close() {
       // this.posting = false;
       this.dialogVisible = false;
+      
     }
   }
 };
