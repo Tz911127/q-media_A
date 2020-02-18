@@ -10,14 +10,17 @@ import business from '../views/business.vue'
 import org from '../views/org.vue'
 import terminal from '../views/terminal.vue'
 import meterial from '../views/meterial.vue'
+import program from '../views/program.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
 import terminalUpload from '../components/sytemManage/terminalUpload.vue'
+import programPage from '../components/program/programPage'
 import terminalReport from '../components/report/termialReport.vue'
 import adReport from '../components/report/adReport.vue'
 import orderReport from '../components/report/orderReport'
 import dataReport from '../components/report/dataReport'
+
 
 Vue.use(VueRouter)
 
@@ -117,6 +120,25 @@ const routes = [{
                     icon: 'el-icon-s-management',
                 },
                 component: meterial,
+            },
+            {
+                path: '/program',
+                name: 'program',
+                access: '-1',
+                meta: {
+                    title: '广告管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-s-management',
+                },
+                component: program,
+                children: [{
+                    path: 'programPage',
+                    name: 'programPage',
+                    meta: {
+                        title: '广告管理',
+                    },
+                    component: programPage
+                }, ]
             },
             {
                 path: '/report',
