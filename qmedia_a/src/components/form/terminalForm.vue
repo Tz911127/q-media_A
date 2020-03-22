@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="loading" class="detail">
     <div>基本信息</div>
     <el-divider></el-divider>
     <el-form :model="formData" :inline="true">
@@ -95,7 +95,7 @@ export default {
 </script>
 
 <style scope>
-.el-form-item {
+.detail .el-form-item {
   width: 40%;
   min-width: 280px;
   white-space: nowrap;

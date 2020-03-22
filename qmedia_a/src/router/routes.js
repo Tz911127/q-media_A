@@ -11,11 +11,13 @@ import org from '../views/org.vue'
 import terminal from '../views/terminal.vue'
 import meterial from '../views/meterial.vue'
 import program from '../views/program.vue'
+import audit from '../views/audit.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
 import terminalUpload from '../components/sytemManage/terminalUpload.vue'
 import programPage from '../components/program/programPage'
+import notice from '../components/program/notice'
 import terminalReport from '../components/report/termialReport.vue'
 import adReport from '../components/report/adReport.vue'
 import orderReport from '../components/report/orderReport'
@@ -128,7 +130,7 @@ const routes = [{
                 meta: {
                     title: '广告管理',
                     hideInMenu: false,
-                    icon: 'el-icon-s-management',
+                    icon: 'el-icon-s-finance',
                 },
                 component: program,
                 children: [{
@@ -138,7 +140,25 @@ const routes = [{
                         title: '广告管理',
                     },
                     component: programPage
+                }, {
+                    path: 'notice',
+                    name: 'notice',
+                    meta: {
+                        title: '紧急通知',
+                    },
+                    component: notice
                 }, ]
+            },
+            {
+                path: '/audit',
+                name: 'audit',
+                access: '-1',
+                meta: {
+                    title: '审核管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-film',
+                },
+                component: audit,
             },
             {
                 path: '/report',

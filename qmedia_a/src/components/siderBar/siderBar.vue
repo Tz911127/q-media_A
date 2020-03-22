@@ -14,6 +14,7 @@
           <router-link class="title" active-class="active" tag="div" :to="{name: route.name}">
             <i :class="route.meta.icon"></i>
             <span>{{route.meta.title}}</span>
+            <el-badge :value="value" :max="99" class="item" v-if="route.meta.title == '审核管理'"></el-badge>
           </router-link>
           <span slot="title" v-show="isCollapse">{{route.meta.title}}</span>
         </el-menu-item>
@@ -43,10 +44,12 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getCheckPage } from "@/api/audit.js";
 export default {
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      value: 0
     };
   },
   props: {
@@ -62,6 +65,21 @@ export default {
     opened: function(val) {
       this.isCollapse = val;
     }
+  },
+  methods: {
+    getData() {
+      let params = {};
+      getCheckPage(params).then(res => {
+        this.value =
+          res.extra.platformLv1 +
+          res.extra.platformLv2 +
+          res.extra.platformLv3 +
+          res.extra.platformLv4;
+      });
+    }
+  },
+  mounted() {
+    this.getData();
   }
 };
 </script>
@@ -81,11 +99,11 @@ export default {
 .app-siderbar .el-tooltip {
   padding: 0 !important;
 }
-.app-siderbar .el-tooltip .title {
-  /* padding: 0 20px; */
-}
 .app-siderbar .el-submenu .title .el-menu-item {
   padding-left: 0 !important;
-  text-align: center
+  text-align: center;
+}
+.item {
+  margin-left: 20px;
 }
 </style>

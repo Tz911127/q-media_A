@@ -42,7 +42,7 @@
 
 .status {
     left: 0;
-    background: rgba(30, 202, 184, 1);
+    /* background: rgba(30, 202, 184, 1); */
 }
 
 .baseStatus {

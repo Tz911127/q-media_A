@@ -27,7 +27,7 @@
           >
             <div class="review" v-show="active == value">
               <div class="review_flex">
-                <span @click="review(value)">预览</span>
+                <span @click="review(index,value)">预览</span>
               </div>
             </div>
 
@@ -66,12 +66,18 @@
       background
       :total="total"
     ></el-pagination>
+    <!-- 预览 -->
+    <v-dialog ref="programDialog" :width="`50%`" :showFooter="false" title="节目预览">
+      <program-form :data="programForm"></program-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import { getProgramPage } from "@/api/program";
+import { getProgramPage, getProgramDetail } from "@/api/program";
+import programForm from "@/components/form/programForm";
 export default {
+  components: { programForm },
   data() {
     return {
       cardData: [],
@@ -107,7 +113,8 @@ export default {
         { name: "已删除", val: 1 },
         { name: "未删除", val: 0 }
       ],
-      resolutes: []
+      resolutes: [],
+      programForm:{}
     };
   },
   methods: {
@@ -125,7 +132,12 @@ export default {
     mouseLeave() {
       this.active = -1;
     },
-    review() {},
+    review(i, e) {
+      getProgramDetail(i).then(res => {
+        this.$refs.programDialog.dialogVisible = true;
+        this.programForm = res;
+      });
+    },
     handleSizeChange(val) {
       this.tableParams.limit = val;
       this.getData();
