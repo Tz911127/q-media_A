@@ -7,9 +7,11 @@
           <span class="platFont">{{extra.platformLv1}}</span>
         </span>
         <audit-table
+          ref="check1"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -23,9 +25,11 @@
           <span class="platFont">{{extra.platformLv2}}</span>
         </span>
         <audit-table
+          ref="check2"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -39,9 +43,11 @@
           <span class="platFont">{{extra.platformLv3}}</span>
         </span>
         <audit-table
+          ref="check3"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -55,9 +61,11 @@
           <span class="platFont">{{extra.platformLv4}}</span>
         </span>
         <audit-table
+          ref="check4"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -68,9 +76,11 @@
       <el-tab-pane>
         <span slot="label">审核通过</span>
         <audit-table
+          ref="check5"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -81,9 +91,11 @@
       <el-tab-pane>
         <span slot="label">审核不通过</span>
         <audit-table
+          ref="check6"
           :data="data"
           :total="total"
           :loading="loading"
+          :tab="tab"
           @typeChange="typeChange"
           @checkTypeChange="checkTypeChange"
           @search="search"
@@ -111,7 +123,8 @@ export default {
       tableParams: {
         page: 0,
         limit: 10
-      }
+      },
+      tab: 0
     };
   },
   methods: {
@@ -119,6 +132,10 @@ export default {
       this.tab = JSON.parse(tab.index);
       this.tableParams.page = 0;
       this.tableParams.limit = 10;
+      this.tableParams.flowType = "";
+      this.tableParams.platformCheckType = "";
+      this.tableParams.targetName = "";
+      this.tableParams.ck = "";
       if (tab.index == 0) {
         this.tableParams.status = "";
         this.tableParams.platformCurrentLevel = 1;
@@ -176,14 +193,26 @@ export default {
       this.tableParams.platformCheckType = val;
       this.search();
     },
-    search(val) {
-      // if (val) {
-      //   this.tableParams.ck = val.ck;
-      //   this.tableParams.targetName = val.targetName;
-      // } else {
-      //   this.tableParams.ck = "";
-      //   this.tableParams.targetName = "";
-      // }
+    search() {
+      if (this.tab == 0) {
+        this.tableParams.ck = this.$refs.check1.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check1.searchObj.targetName;
+      } else if (this.tab == 1) {
+        this.tableParams.ck = this.$refs.check2.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check2.searchObj.targetName;
+      } else if (this.tab == 2) {
+        this.tableParams.ck = this.$refs.check3.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check3.searchObj.targetName;
+      } else if (this.tab == 3) {
+        this.tableParams.ck = this.$refs.check4.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check4.searchObj.targetName;
+      } else if (this.tab == 4) {
+        this.tableParams.ck = this.$refs.check5.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check5.searchObj.targetName;
+      } else if (this.tab == 5) {
+        this.tableParams.ck = this.$refs.check6.searchObj.ck;
+        this.tableParams.targetName = this.$refs.check6.searchObj.targetName;
+      }
 
       this.getData();
     },
@@ -197,7 +226,8 @@ export default {
     }
   },
   mounted() {
-    this.getData();
+    this.tableParams.platformCurrentLevel = 1;
+    this.getCheckData();
   }
 };
 </script>

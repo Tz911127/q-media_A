@@ -5,12 +5,14 @@
         :placeholder="`内容类型`"
         @optionChange="typeChange"
         :options="types"
+        ref="navType"
         style="width: 160px;margin-right:15px"
       ></v-select>
       <v-select
         :placeholder="`审核类型`"
         @optionChange="checkTypeChange"
         :options="checkTypes"
+        ref="checkType"
         style="width: 160px;margin-right:15px"
       ></v-select>
       <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
@@ -52,7 +54,8 @@ export default {
   props: {
     data: Array,
     total: Number,
-    loading: Boolean
+    loading: Boolean,
+    tab: Number
   },
   data() {
     return {
@@ -161,6 +164,19 @@ export default {
     },
     handleCurrentChange(val) {
       this.$emit("handleCurrentChange", val);
+    }
+  },
+  computed: {
+    changeTab() {
+      return this.tab;
+    }
+  },
+  watch: {
+    changeTab(val) {
+      this.$refs.navType.value = "";
+      this.$refs.checkType.value = "";
+      this.searchObj.ck = "";
+      this.searchObj.targetName = "";
     }
   }
 };
