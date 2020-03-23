@@ -6,8 +6,13 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import installPlugin from '@/plugins'
 
-
+import './assets/font/iconfont.css'
 Vue.config.productionTip = false
+import * as filters from './editorFive/filters/index'
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 Vue.use(ElementUI);
 Vue.use(installPlugin);

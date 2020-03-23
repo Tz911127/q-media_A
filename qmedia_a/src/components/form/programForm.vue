@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div style="display:inline-block;width:60%;height:350px ;text-align:center"></div>
+    <div style="display:inline-block;width:60%;height:350px ;text-align:center">
+        <programMonitor></programMonitor>
+    </div>
     <div style="display:inline-block;width:30%;margin-left:5%;vertical-align:top">
       <el-form :model="data">
         <el-form-item label="名称">{{this.$filters.filterPrograms(data.name,data.del)}}</el-form-item>
@@ -14,13 +16,18 @@
 </template>
 
 <script>
+import programMonitor from '../programMonitor/index'
 export default {
+  
   props: {
     data: Object
   },
   data() {
     return {};
-  }
+  },
+  components: {
+    programMonitor,
+  },
 };
 </script>
 

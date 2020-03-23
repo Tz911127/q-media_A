@@ -114,7 +114,8 @@ export default {
         { name: "未删除", val: 0 }
       ],
       resolutes: [],
-      programForm:{}
+      programForm:{},
+      programContent:{}
     };
   },
   methods: {
@@ -136,6 +137,12 @@ export default {
       getProgramDetail(i).then(res => {
         this.$refs.programDialog.dialogVisible = true;
         this.programForm = res;
+        this.programContent = {};
+        this.programContent.content = JSON.parse(res.content).pages;
+        this.programContent.pixelHorizontal = res.width;
+        this.programContent.pixelVertical = res.height;
+        this.programContent.programDialogType = 1;
+        this.$store.commit("SET_PROGRAM_CONTENT", this.programContent);
       });
     },
     handleSizeChange(val) {
