@@ -12,6 +12,8 @@ import terminal from '../views/terminal.vue'
 import meterial from '../views/meterial.vue'
 import program from '../views/program.vue'
 import audit from '../views/audit.vue'
+import order from '../views/order.vue'
+import command from '../views/command.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
@@ -161,6 +163,17 @@ const routes = [{
                 component: audit,
             },
             {
+                path: '/order',
+                name: 'order',
+                access: '-1',
+                meta: {
+                    title: '订单管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-s-operation',
+                },
+                component: order,
+            },
+            {
                 path: '/report',
                 name: 'report',
                 access: '-1',
@@ -204,7 +217,17 @@ const routes = [{
                     }
                 ]
             },
-
+            {
+                path: '/command',
+                name: 'command',
+                access: '-1',
+                meta: {
+                    title: '日志记录',
+                    hideInMenu: false,
+                    icon: 'el-icon-s-order',
+                },
+                component: command,
+            },
             {
                 path: '/org',
                 name: 'org',

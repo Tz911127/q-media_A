@@ -50,6 +50,10 @@ export default {
     width: {
       type: String,
       default: "540px"
+    },
+    isBody: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -66,16 +70,18 @@ export default {
       this.posting = false;
       this.$emit("closed");
       // this.$store.state.material.detailData = {};
-      this.$store.commit('CLEAR_PROGRAM_CONTENT')
+      this.$store.commit("CLEAR_PROGRAM_CONTENT");
     },
     open() {
       // this.dialogVisible = true;
       this.$emit("open");
     },
     close() {
-      // this.posting = false;
-      this.dialogVisible = false;
-      
+      if (this.isBody) {
+        this.$emit("close");
+      } else {
+        this.dialogVisible = false;
+      }
     }
   }
 };

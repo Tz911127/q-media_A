@@ -28,13 +28,13 @@
         <el-form-item label="创建时间">{{this.$filters.filterTime(data.createTime)}}</el-form-item>
         <el-form-item label="组织机构">{{data.organizationId}}</el-form-item>
         <el-form-item label="当前状态">{{this.$filters.filterStatus(data.status)}}</el-form-item>
+        <el-form-item label="原因" v-if="data.checkReason">{{data.checkReason}}</el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   props: {
     data: Object

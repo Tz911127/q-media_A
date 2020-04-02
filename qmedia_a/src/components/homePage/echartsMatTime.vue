@@ -5,11 +5,6 @@
 </template>
 <script>
 var echarts = require("echarts");
-// import {
-//   filterData,
-//   formatDuring,
-//   filterMonthTwo
-// } from "../editorFive/services/dateFilter";
 export default {
   props: {
     onlineReport: {

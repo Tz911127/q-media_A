@@ -1,4 +1,5 @@
-export function formateDate(date) {
+export function formateDate(d) {
+    let date = String(d)
     if (date) {
         if (date.length == 6) {
             return (
@@ -123,4 +124,16 @@ export function filterStatus(num) {
     } else if (num == 7) {
         return "转码失败";
     }
+}
+
+const numFilter = (value) => {
+    let realVal = ''
+    value = value / 100
+    if (value) {
+        // 截取当前数据到小数点后两位
+        realVal = parseFloat(value).toFixed(2)
+    } else {
+        realVal = '0.00'
+    }
+    return realVal
 }

@@ -42,14 +42,47 @@
       @handleSizeChange="handleSizeChange"
       @handleCurrentChange="handleCurrentChange"
     ></dialog-table>
+    <v-dialog
+      :width="`50%`"
+      @closed="closed"
+      :title="rowData.type==0?'素材预览':'节目预览'"
+      :showFooter="tab>3?false:true"
+      :cancelBtnTxt="`不通过`"
+      :confirmBtnTxt="`通过`"
+      :isBody="true"
+      ref="detail"
+      @handleClose="handleClose"
+      @close="close"
+    >
+      <meterial-form v-if="rowData.type==0" :data="detailRow" @click="click"></meterial-form>
+      <program-form v-else :data="detailRow"></program-form>
+      <el-dialog width="30%" title="审核不通过原因" :visible.sync="innerVisible" append-to-body>
+        <el-input type="textarea" :rows="2" placeholder="请输入审核不通过的原因" v-model.trim="textarea"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="innerVisible=false">取 消</el-button>
+          <el-button type="success" @click="submitPass">确 定</el-button>
+        </span>
+      </el-dialog>
+    </v-dialog>
+    <div class="image-view" v-if="flag" @click="click">
+      <div class="img-box">
+        <img :src="imgPathFormate(detailRow.path)" width="100%" height="100%" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import dialogTable from "./components/dialogTable";
+import meterialForm from "@/components/form/meterialForm";
+import programForm from "@/components/form/programForm";
+import screenfull from "screenfull";
+import { getCheckDetail } from "@/api/audit";
 export default {
   components: {
-    dialogTable
+    dialogTable,
+    meterialForm,
+    programForm
   },
   props: {
     data: Array,
@@ -145,11 +178,30 @@ export default {
       searchObj: {
         ck: "",
         targetName: ""
-      }
+      },
+      detailRow: {},
+      rowData: {},
+      flag: false,
+      innerVisible: false,
+      textarea: ""
     };
   },
   methods: {
-    detail(row) {},
+    detail(row) {
+      this.rowData = row;
+      getCheckDetail(row).then(res => {
+        this.$refs.detail.dialogVisible = true;
+        this.detailRow = res;
+        if (row.type == 1) {
+          this.programContent = {};
+          this.programContent.content = JSON.parse(res.content).pages;
+          this.programContent.pixelHorizontal = res.width;
+          this.programContent.pixelVertical = res.height;
+          this.programContent.programDialogType = 1;
+          this.$store.commit("SET_PROGRAM_CONTENT", this.programContent);
+        }
+      });
+    },
     typeChange(val) {
       this.$emit("typeChange", val);
     },
@@ -164,6 +216,40 @@ export default {
     },
     handleCurrentChange(val) {
       this.$emit("handleCurrentChange", val);
+    },
+    closed() {
+      this.detailRow.path = "";
+    },
+    click() {
+      screenfull.toggle();
+      screenfull.on("change", () => {
+        if (screenfull.isFullscreen) {
+          this.flag = true;
+        } else {
+          this.flag = false;
+        }
+      });
+    },
+    handleClose() {
+      this.$refs.detail.dialogVisible = false;
+      this.$emit("handleClose", this.rowData);
+    },
+    close() {
+      this.innerVisible = true;
+    },
+    submitPass() {
+      if (this.textarea == "") {
+        this.$message.error("请输入审核不通过原因");
+      } else {
+        this.innerVisible = false;
+        this.$refs.detail.dialogVisible = false;
+        let params = {
+          id: this.rowData.id,
+          reject: 1,
+          reason: this.textarea
+        };
+        this.$parent.$parent.$parent.sentData(params);
+      }
     }
   },
   computed: {
@@ -182,5 +268,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style >
+@import "../../style/card.css";
 </style>

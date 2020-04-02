@@ -66,6 +66,11 @@ export default {
       this.isCollapse = val;
     }
   },
+  created() {
+    this.$root.eventHub.$on("extraTotal", num => {
+      this.value = num;
+    });
+  },
   methods: {
     getData() {
       let params = {};

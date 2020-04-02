@@ -17,6 +17,7 @@
           @search="search"
           @handleSizeChange="handleSizeChange"
           @handleCurrentChange="handleCurrentChange"
+          @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
       <el-tab-pane>
@@ -35,6 +36,7 @@
           @search="search"
           @handleSizeChange="handleSizeChange"
           @handleCurrentChange="handleCurrentChange"
+          @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
       <el-tab-pane>
@@ -53,6 +55,7 @@
           @search="search"
           @handleSizeChange="handleSizeChange"
           @handleCurrentChange="handleCurrentChange"
+          @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
       <el-tab-pane>
@@ -71,6 +74,7 @@
           @search="search"
           @handleSizeChange="handleSizeChange"
           @handleCurrentChange="handleCurrentChange"
+          @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
       <el-tab-pane>
@@ -108,7 +112,13 @@
 </template>
 
 <script>
-import { getCheckPage } from "@/api/audit.js";
+import {
+  getCheckPage,
+  patchCheck1,
+  patchCheck2,
+  patchCheck3,
+  patchCheck4
+} from "@/api/audit.js";
 import auditTable from "../components/table/auditTable";
 export default {
   components: {
@@ -136,21 +146,9 @@ export default {
       this.tableParams.platformCheckType = "";
       this.tableParams.targetName = "";
       this.tableParams.ck = "";
-      if (tab.index == 0) {
+      if (tab.index < 4) {
         this.tableParams.status = "";
-        this.tableParams.platformCurrentLevel = 1;
-        this.getCheckData();
-      } else if (tab.index == 1) {
-        this.tableParams.status = "";
-        this.tableParams.platformCurrentLevel = 2;
-        this.getCheckData();
-      } else if (tab.index == 2) {
-        this.tableParams.status = "";
-        this.tableParams.platformCurrentLevel = 3;
-        this.getCheckData();
-      } else if (tab.index == 3) {
-        this.tableParams.status = "";
-        this.tableParams.platformCurrentLevel = 4;
+        this.tableParams.platformCurrentLevel = Number(tab.index) + 1;
         this.getCheckData();
       } else if (tab.index == 4) {
         this.tableParams.status = 1;
@@ -182,6 +180,12 @@ export default {
           this.extra = res.extra;
           this.data = res.data;
           this.total = res.total;
+          let extraTotal =
+            this.extra.platformLv1 +
+            this.extra.platformLv2 +
+            this.extra.platformLv3 +
+            this.extra.platformLv4;
+          this.$root.eventHub.$emit("extraTotal", extraTotal);
         })
         .catch(err => {});
     },
@@ -223,6 +227,26 @@ export default {
     handleCurrentChange(val) {
       this.tableParams.page = val - 1;
       this.getCheckData();
+    },
+    handleClose(val) {
+      let params = {
+        id: val.id
+      };
+      this.sentData(params);
+    },
+    sentData(params) {
+      if (this.tab == 0) {
+        patchCheck1(params).then(res => {});
+      } else if (this.tab == 1) {
+        patchCheck2(params).then(res => {});
+      } else if (this.tab == 2) {
+        patchCheck3(params).then(res => {});
+      } else if (this.tab == 3) {
+        patchCheck4(params).then(res => {});
+      }
+
+      this.toast("操作成功", "success");
+      this.getData();
     }
   },
   mounted() {
