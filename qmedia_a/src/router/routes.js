@@ -14,6 +14,7 @@ import program from '../views/program.vue'
 import audit from '../views/audit.vue'
 import order from '../views/order.vue'
 import command from '../views/command.vue'
+import role from '../views/role.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
@@ -24,6 +25,8 @@ import terminalReport from '../components/report/termialReport.vue'
 import adReport from '../components/report/adReport.vue'
 import orderReport from '../components/report/orderReport'
 import dataReport from '../components/report/dataReport'
+import rolePage from '../components/role/role.vue'
+import account from '../components/role/account.vue'
 
 
 Vue.use(VueRouter)
@@ -216,6 +219,32 @@ const routes = [{
                         component: dataReport
                     }
                 ]
+            },
+            {
+                path: '/role',
+                name: 'role',
+                access: '-1',
+                meta: {
+                    title: '账户中心',
+                    hideInMenu: false,
+                    icon: 'el-icon-user-solid',
+                },
+                component: role,
+                children: [{
+                    path: 'rolePage',
+                    name: 'rolePage',
+                    meta: {
+                        title: '角色管理',
+                    },
+                    component: rolePage
+                }, {
+                    path: 'account',
+                    name: 'account',
+                    meta: {
+                        title: '账户管理',
+                    },
+                    component: account
+                }]
             },
             {
                 path: '/command',
