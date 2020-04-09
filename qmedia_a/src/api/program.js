@@ -14,3 +14,10 @@ export const getProgramDetail = (params) => {
         method: 'get'
     })
 }
+export const getProgramPlay = (params) => {
+    return axios.request({
+        url: '/api/program/play/page',
+        params: params,
+        method: 'get'
+    })
+}

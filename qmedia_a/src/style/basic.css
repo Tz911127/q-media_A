@@ -122,3 +122,8 @@ body {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.searchInput {
+    width: 160px;
+    float: right;
+    margin-right: 15px;
+  }

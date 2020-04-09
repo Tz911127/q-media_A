@@ -53,26 +53,6 @@ import wordData from "../../libs/sensitiveWord";
 export default {
   mixins: [formMinxin],
   data() {
-    let validatorTit = (rule, value, callback) => {
-      let rex = this.regNotice.regNick;
-      if (value == "") {
-        callback(new Error("请输入标题"));
-      } else if (!rex.test(value)) {
-        callback(new Error("请输入2-20位数字、字母、汉字"));
-      } else {
-        callback();
-      }
-    };
-    let validatorNav = (rule, value, callback) => {
-      let rex = this.regNotice.regText;
-      if (value == "") {
-        callback(new Error("请输入标题"));
-      } else if (!rex.test(value)) {
-        callback(new Error("请输入2-100位数字、字母、汉字"));
-      } else {
-        callback();
-      }
-    };
     return {
       ruleForm: {
         date: "",
@@ -83,7 +63,7 @@ export default {
       rules: {
         tit: [
           { required: true, message: "请输入标题", trigger: "blur" },
-          { validator: validatorTit }
+          { validator: this.validatorTit }
         ],
         content: [
           { required: true, message: "请输入通知内容", trigger: "blur" },
@@ -93,7 +73,7 @@ export default {
             message: "请输入2-100位数字、字母、汉字",
             trigger: "blur"
           },
-          { validator: validatorNav }
+          { validator: this.validatorNav }
         ],
         date: [
           {

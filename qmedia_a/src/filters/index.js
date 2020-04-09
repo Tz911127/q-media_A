@@ -125,15 +125,49 @@ export function filterStatus(num) {
         return "转码失败";
     }
 }
+// const numFilter = (value) => {
+//     let realVal = ''
+//     value = value / 100
+//     if (value) {
+//         // 截取当前数据到小数点后两位
+//         realVal = parseFloat(value).toFixed(2)
+//     } else {
+//         realVal = '0.00'
+//     }
+//     return realVal
+// }
 
-const numFilter = (value) => {
-    let realVal = ''
-    value = value / 100
-    if (value) {
-        // 截取当前数据到小数点后两位
-        realVal = parseFloat(value).toFixed(2)
-    } else {
-        realVal = '0.00'
+export function filtersDate(num) {
+    if (num != "") {
+        num = formateDate(num[0].dateStart) + "至" + formateDate(num[0].dateEnd);
+        return num;
     }
-    return realVal
+}
+
+export function filterWeek(num, type) {
+    if (type == 0) {
+        let weeksArr = num.split(",");
+        if (weeksArr.length == 7) {
+            weeksArr = "每天";
+        } else {
+            weeksArr = String(weeksArr);
+            weeksArr = weeksArr.replace("1", "周一");
+            weeksArr = weeksArr.replace("2", "周二");
+            weeksArr = weeksArr.replace("3", "周三");
+            weeksArr = weeksArr.replace("4", "周四");
+            weeksArr = weeksArr.replace("5", "周五");
+            weeksArr = weeksArr.replace("6", "周六");
+            weeksArr = weeksArr.replace("7", "周日");
+        }
+        return weeksArr;
+    } else {
+        return num;
+    }
+}
+export function filtersType(num) {
+    if (num === 0) {
+        return "轮播";
+    } else if (num === 1) {
+        return "插播";
+    }
 }

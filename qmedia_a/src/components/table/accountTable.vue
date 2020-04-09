@@ -60,20 +60,66 @@
               clearable
             ></el-input>
           </div>
+          <div style="margin:15px 0">
+            <el-button type="success" @click="createAccount">
+              <i class="el-icon-plus"></i> 添加账户
+            </el-button>
+          </div>
         </div>
       </template>
     </basic-table>
+    <!-- 弹窗 -->
+    <v-dialog
+      ref="accountDialog"
+      :title="title == 0?'修改密码':title == 1?'添加账户':'编辑账户'"
+      @handleClose="handleClose"
+    >
+      <div v-if="title==0">
+        <el-form
+          :model="ruleForm"
+          label-width="80px"
+          class="demo-ruleForm"
+          ref="ruleForm"
+          :rules="rules"
+        >
+          <el-form-item label="新密码" prop="newPassWord">
+            <el-input v-model.trim="ruleForm.newPassWord" clearable placeholder="请输入新密码"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div v-if="title == 1||title==2">
+        <account-form ref="accountForm" :editData="accountData" :title="title"></account-form>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import basicTable from "./components/basicTable";
-import { getUserPage } from "@/api/role";
+import accountForm from "../form/accountForm";
+import {
+  getUserPage,
+  patchEnable,
+  patchPassWord,
+  postUser,
+  patchUser
+} from "@/api/role";
 export default {
   components: {
-    basicTable
+    basicTable,
+    accountForm
   },
   data() {
+    let validatorPass = (rule, value, callback) => {
+      let rex = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/;
+      if (value == "") {
+        callback(new Error("请输入登录密码"));
+      } else if (!rex.test(value)) {
+        callback(new Error("请输入6-20位数字、字母组合"));
+      } else {
+        callback();
+      }
+    };
     return {
       loading: true,
       columns: [
@@ -110,7 +156,7 @@ export default {
         {
           label: "角色名称",
           render(h, row) {
-            return <span>{row.role.name}</span>;
+            return <span>{row.role ? row.role.name : ""}</span>;
           }
         },
         {
@@ -132,14 +178,14 @@ export default {
               {
                 isShow: true,
                 title: "账户切换状态",
-                icon: "el-icon-lock",
-                method: () => this.edit(row)
+                icon: this.icon(row),
+                method: () => this.isEnable(row)
               },
               {
                 isShow: true,
                 title: "重置密码",
                 icon: "el-icon-brush",
-                method: () => this.edit(row)
+                method: () => this.changeWord(row)
               }
             ];
             return h("table-operate", {
@@ -172,7 +218,25 @@ export default {
       enableds: [
         { name: "禁用", val: 0 },
         { name: "激活", val: 1 }
-      ]
+      ],
+      title: 0,
+      ruleForm: {
+        newPassWord: ""
+      },
+      rules: {
+        newPassWord: [
+          { required: true, message: "请输入登录密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 20,
+            message: "请输入6-20位数字、字母组合",
+            trigger: "blur"
+          },
+          { validator: validatorPass }
+        ]
+      },
+      rowData: {},
+      accountData: {}
     };
   },
   methods: {
@@ -198,6 +262,123 @@ export default {
     enabledChange(val) {
       this.tableParams.enabled = val;
       this.search();
+    },
+    createAccount() {
+      this.title = 1;
+      this.$refs.accountDialog.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs.accountForm.$refs.ruleForm.resetFields();
+        this.$refs.accountForm.ruleForm = {
+          type: 1,
+          noticeType: [],
+          role: ""
+        };
+      });
+    },
+    icon(row) {
+      return row.enabled == 1 ? "el-icon-lock" : "el-icon-unlock";
+    },
+    isEnable(row) {
+      let params = {
+        id: row.id,
+        enable: row.enabled == 0 ? 1 : 0
+      };
+      let that = this;
+      this.confirm("确定切换账号状态？", "", {
+        request: () => {
+          return patchEnable(params);
+        },
+        success() {
+          that.getData();
+          that.toast("操作成功", "success");
+        }
+      });
+    },
+    changeWord(row) {
+      this.$refs.accountDialog.dialogVisible = true;
+      this.title = 0;
+      this.rowData = row;
+    },
+    handleClose() {
+      if (this.title == 0) {
+        this.$refs.ruleForm.validate(valid => {
+          let params = {
+            id: this.rowData.id,
+            passWord: this.ruleForm.newPassWord
+          };
+          patchPassWord(params).then(res => {
+            this.getData();
+            this.toast("操作成功", "success");
+            this.$refs.accountDialog.dialogVisible = false;
+          });
+        });
+      } else if (this.title == 1) {
+        this.$refs.accountForm.$refs.ruleForm.validate(valid => {
+          let params = Object.assign({}, this.$refs.accountForm.ruleForm);
+          params.roleId = params.role.id;
+          params.ck = params.ck;
+          params.noticeType.indexOf("0") > -1
+            ? (params.checkNotice = 1)
+            : (params.checkNotice = 0);
+          params.noticeType.indexOf("1") > -1
+            ? (params.contractCheckNotice = 1)
+            : (params.contractCheckNotice = 0);
+          params.noticeType.indexOf("2") > -1
+            ? (params.orderCheckNotice = 1)
+            : (params.orderCheckNotice = 0);
+          if (params.type == 2) {
+            if (params.warn) {
+              params.checkNotice = 1;
+            } else {
+              params.checkNotice = 0;
+            }
+          } else {
+            if (params.warn) {
+              params.smsNotice = 1;
+            } else {
+              params.smsNotice = 0;
+            }
+          }
+          if (params.type == 3) {
+            params.signContract = params.signContract1 == "1" ? 1 : 2;
+          } else if (params.type == 0) {
+            params.signContract = params.signContract == true ? 2 : 0;
+          } else if (params.type == 1) {
+            params.signContract = params.signContract == true ? 1 : 0;
+          }
+
+          postUser(params).then(res => {
+            this.getData();
+            this.toast("操作成功", "success");
+            this.$refs.accountDialog.dialogVisible = false;
+          });
+        });
+      } else {
+        let params = Object.assign({}, this.$refs.accountForm.ruleForm);
+
+        if (params.type == 3) {
+          params.signContract = params.signContract1 == "1" ? 1 : 2;
+        } else if (params.type == 0) {
+          params.signContract = params.signContract == true ? 2 : 0;
+        } else if (params.type == 1) {
+          params.signContract = params.signContract == true ? 1 : 0;
+        }
+
+        patchUser(params).then(res => {
+          this.getData();
+          this.toast("操作成功", "success");
+          this.$refs.accountDialog.dialogVisible = false;
+        });
+      }
+    },
+    edit(row) {
+      this.title = 2;
+      this.accountData = Object.assign({}, row);
+      this.$refs.accountDialog.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs.accountForm.$refs.ruleForm.clearValidate();
+        this.$refs.accountForm.blurOrz()
+      });
     }
   }
 };

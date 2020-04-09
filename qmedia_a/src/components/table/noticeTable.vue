@@ -64,13 +64,13 @@ export default {
                 isShow: true,
                 title: "发布",
                 icon: "el-icon-s-fold",
-                method: () => this.review(0, row)
+                method: () => this.public(0, row)
               },
               {
                 isShow: true,
                 title: "查看发布终端",
                 icon: "el-icon-view",
-                method: () => this.review(1, row)
+                method: () => this.public(1,row)
               }
             ];
             return h("table-operate", {
@@ -99,7 +99,9 @@ export default {
       this.$refs.noticeTable.currentPage = 1;
       this.$refs.noticeTable.fecthData();
     },
-    review(i, e) {},
+    public(i, row) {
+      this.$emit("noticePublic", i, row);
+    },
     createNotice() {
       this.$refs.noticeForm.dialogVisible = true;
     },

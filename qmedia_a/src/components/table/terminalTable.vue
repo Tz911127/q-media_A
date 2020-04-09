@@ -126,10 +126,10 @@
     <!-- 弹窗 -->
     <v-dialog
       ref="terDialog"
-      :title="title == 0?'开关机时间':title == 1?'音量设置':title == 2?'终端升级':title == 3?'':''"
+      :title="title == 0?'开关机时间':title == 1?'音量设置':title == 2?'终端升级':title == 3?'':'播放终端'"
       :width="title==2?`70%`:`50%`"
       @handleClose="handleClose"
-      :showFooter="title==2?false:true"
+      :showFooter="title==2?false:title==4?false:true"
     >
       <set-times v-if="title==0" ref="setTimes"></set-times>
       <set-volume v-if="title==1" ref="setVolume"></set-volume>
@@ -143,6 +143,7 @@
         @handleCurrentChange="handleCurrentChange"
         @upDevice="upDevice"
       ></terminal-up-table>
+      <device-program v-if="title==4" :rowData="rowData" :playData="playData"></device-program>
     </v-dialog>
   </div>
 </template>
@@ -152,6 +153,7 @@ import basicTable from "./components/basicTable";
 import setTimes from "../form/setTimes";
 import setVolume from "../form/setVolume";
 import terminalUpTable from "./terminalUpTable";
+import deviceProgram from "./deviceProgram";
 import {
   getDevicePage,
   enableDevice,
@@ -159,14 +161,16 @@ import {
   setVolumes,
   getVersionFile,
   getDeviceVersion,
-  delDeviceFile
+  delDeviceFile,
+  getDeviceProgram
 } from "@/api/terminal";
 export default {
   components: {
     basicTable,
     setTimes,
     setVolume,
-    terminalUpTable
+    terminalUpTable,
+    deviceProgram
   },
   data() {
     let cities = JSON.parse(localStorage.getItem("cities"));
@@ -285,7 +289,9 @@ export default {
       },
       dialogData: [],
       dialogTotal: 0,
-      dialogLoading: true
+      dialogLoading: true,
+      rowData: {},
+      playData: []
     };
   },
   methods: {
@@ -297,7 +303,18 @@ export default {
       this.$refs.terminalTable.currentPage = 1;
       this.$refs.terminalTable.fecthData();
     },
-    playDevice(row) {},
+    playDevice(row) {
+      this.title = 4;
+
+      this.rowData = row;
+      let params = {
+        tid: row.id
+      };
+      getDeviceProgram(params).then(res => {
+        this.playData = res.data;
+        this.$refs.terDialog.dialogVisible = true;
+      });
+    },
     delDevice(row) {
       let that = this;
       this.confirm(`确定删除终端：` + row.name, "删除", {

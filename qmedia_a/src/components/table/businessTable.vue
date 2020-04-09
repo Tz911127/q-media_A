@@ -40,7 +40,7 @@
         </div>
         <div style="margin:15px 0">
           <el-button type="success">
-            <i class="el-icon-plus"></i>添加企业
+            <i class="el-icon-plus" @click="addBusiness"></i>添加企业
           </el-button>
         </div>
       </template>
@@ -296,7 +296,8 @@ export default {
     search() {
       this.tableParams.keyOrName = this.keyOrName;
       this.getData();
-    }
+    },
+    addBusiness(){}
   },
   mounted() {}
 };

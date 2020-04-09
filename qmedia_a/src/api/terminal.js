@@ -64,3 +64,17 @@ export const terminalOrder = (params) => {
         method: 'get'
     })
 }
+export const getDeviceProgram = (params) => {
+    return axios.request({
+        url: '/api/device/program/page',
+        params: params,
+        method: 'get'
+    })
+}
+export const getProgramDetail = (params) => {
+    return axios.request({
+        url: '/api/program/' + params.id,
+        params: {},
+        method: 'get'
+    })
+}

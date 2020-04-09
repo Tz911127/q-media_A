@@ -39,21 +39,48 @@
             ></el-input>
           </div>
         </div>
+        <div style="margin:15px 0">
+          <el-button type="success" @click="createRole">
+            <i class="el-icon-plus"></i> 添加角色
+          </el-button>
+        </div>
       </template>
     </basic-table>
     <!-- 弹窗 -->
-    <v-dialog ref="roleDialog" :title="title==0?'查看权限':''" :showFooter="false">
-      <el-tree :data="rolePermData" default-expand-all :props="defaultProps"></el-tree>
+    <v-dialog
+      ref="roleDialog"
+      :title="title==0?'查看权限':title==1?'添加角色':'编辑角色'"
+      :showFooter="title==0?false:title==1?true:''"
+      @handleClose="handleClose"
+    >
+      <el-tree v-if="title==0" :data="rolePermData" default-expand-all :props="defaultProps"></el-tree>
+      <role-form
+        v-if="title==1||title ==2"
+        ref="roleForm"
+        :propTree="treeData"
+        :editData="editData"
+        :title="title"
+      ></role-form>
     </v-dialog>
   </div>
 </template>
 
 <script>
-import { getRolePage, getPermTree } from "@/api/role";
+import {
+  getRolePage,
+  getPermTree,
+  getRolePerm,
+  postRole,
+  delRole,
+  getRolePermLeaf,
+  patchRole
+} from "@/api/role";
 import basicTable from "./components/basicTable";
+import roleForm from "../form/roleForm";
 export default {
   components: {
-    basicTable
+    basicTable,
+    roleForm
   },
   data() {
     return {
@@ -94,6 +121,18 @@ export default {
                 title: "查看权限",
                 icon: "el-icon-document-checked",
                 method: () => this.permTree(row)
+              },
+              {
+                isShow: row.category == 2 ? true : false,
+                title: "编辑",
+                icon: "el-icon-edit",
+                method: () => this.editRoleRow(row)
+              },
+              {
+                isShow: row.category == 2 ? true : false,
+                title: "删除",
+                icon: "el-icon-delete",
+                method: () => this.delRoleRow(row)
               }
             ];
             return h("table-operate", {
@@ -125,7 +164,9 @@ export default {
       defaultProps: {
         children: "children",
         label: "name"
-      }
+      },
+      treeData: [],
+      editData: {}
     };
   },
   methods: {
@@ -138,6 +179,7 @@ export default {
       this.$refs.roleTable.fecthData();
     },
     permTree(row) {
+      this.title = 0;
       getPermTree(row.id).then(res => {
         this.$refs.roleDialog.dialogVisible = true;
         this.rolePermData = res;
@@ -151,6 +193,75 @@ export default {
     typeChange(val) {
       this.tableParams.type = val;
       this.search();
+    },
+    createRole() {
+      this.title = 1;
+      getRolePerm({ type: 1 }).then(res => {
+        this.$refs.roleDialog.dialogVisible = true;
+        this.treeData = res;
+        this.$nextTick(() => {
+          this.$refs.roleForm.ruleForm = {
+            type: 1
+          };
+        });
+      });
+    },
+    handleClose() {
+      this.$refs.roleForm.validate(valid => {
+        if (valid) {
+          let arr1 = this.$refs.roleForm.$refs.tree.getCheckedKeys();
+          let arr2 = this.$refs.roleForm.$refs.tree.getHalfCheckedKeys();
+          this.$refs.roleForm.ruleForm.functionIds = arr1.concat(arr2);
+          if (this.$refs.roleForm.ruleForm.functionIds.length == 0) {
+            this.toast("请选择权限", "error");
+            return;
+          }
+          if (this.title == 1) {
+            postRole(this.$refs.roleForm.ruleForm).then(res => {
+              this.toast("创建成功", "success");
+              this.getData();
+            });
+          } else {
+            patchRole(this.$refs.roleForm.ruleForm).then(res => {
+              this.toast("编辑成功", "success");
+              this.getData();
+            });
+          }
+          this.$refs.roleDialog.dialogVisible = false;
+        }
+      });
+    },
+    editRoleRow(row) {
+      this.title = 2;
+      let params = {
+        type: row.type,
+        ck: row.ck
+      };
+
+      this.$nextTick(() => {
+        this.editData = Object.assign({}, row);
+        getRolePerm(params).then(res => {
+          this.treeData = res;
+          getRolePermLeaf(row).then(res => {
+            this.$nextTick(() => {
+              this.$refs.roleForm.$refs.tree.setCheckedKeys(res);
+            });
+          });
+          this.$refs.roleDialog.dialogVisible = true;
+        });
+      });
+    },
+    delRoleRow(row) {
+      let that = this;
+      this.confirm("是否删除此角色？", "删除", {
+        request: () => {
+          return delRole(row);
+        },
+        success() {
+          that.getData();
+          that.toast("操作成功", "success");
+        }
+      });
     }
   }
 };

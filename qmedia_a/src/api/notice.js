@@ -13,3 +13,17 @@ export const postNotice = (data) => {
         method: 'post'
     })
 }
+export const getNoticeDevice = (params) => {
+    return axios.request({
+        url: 'api/urgent-notice/device/page',
+        params: params,
+        method: 'get'
+    })
+}
+export const patchNoticePlay = (data) => {
+    return axios.request({
+        url: '/api/urgent-notice/play',
+        data: data,
+        method: 'patch'
+    })
+}
