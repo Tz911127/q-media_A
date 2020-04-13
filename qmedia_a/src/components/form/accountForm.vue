@@ -26,11 +26,11 @@
         ></el-input>
         <span v-else>{{ruleForm.ck}}</span>
       </el-form-item>
-      <el-form-item label="登录账户" prop="name">
-        <el-input v-model="ruleForm.name" clearable placeholder="请输入登录账户"></el-input>
+      <el-form-item label="登录账户" prop="account">
+        <el-input v-model="ruleForm.account" clearable placeholder="请输入登录账户"></el-input>
       </el-form-item>
-      <el-form-item label="账户名称" prop="account">
-        <el-input v-model="ruleForm.account" clearable placeholder="请输入账户名称"></el-input>
+      <el-form-item label="账户名称" prop="name">
+        <el-input v-model="ruleForm.name" clearable placeholder="请输入账户名称"></el-input>
       </el-form-item>
       <el-form-item label="登录密码" prop="password" v-if="title == 1">
         <el-input v-model="ruleForm.password" clearable placeholder="请输入密码"></el-input>
@@ -62,14 +62,18 @@
         <el-input v-model="ruleForm.email" clearable placeholder="请输入邮箱"></el-input>
       </el-form-item>
       <template v-if="ruleForm.type !=1">
-        <!--   v-if="title=='编辑账户'?(ruleForm.type != 0&&ruleForm.type !=3?true:false):ruleForm.type !=3" -->
-        <el-form-item label="提醒业务" prop="warn" v-if="ruleForm.type !=3">
-          <el-checkbox v-model="ruleForm.warn" :label="ruleForm.type == 0?'发送开通账户短信':'发送审核通知邮件'"></el-checkbox>
+        <!-- v-if="ruleForm.type !=3" -->
+        <el-form-item
+          label="提醒业务"
+          prop="warn"
+          v-if="title==2?(ruleForm.type != 0&&ruleForm.type !=3?true:false):ruleForm.type !=3"
+        >
+          <el-checkbox v-model="warn" :label="ruleForm.type == 0?'发送开通账户短信':'发送审核通知邮件'"></el-checkbox>
         </el-form-item>
       </template>
       <template v-else>
         <el-form-item label="邮件提醒业务" prop="noticeType">
-          <el-checkbox-group v-model="ruleForm.noticeType">
+          <el-checkbox-group v-model="noticeType">
             <el-checkbox label="0" name="type">内容审核</el-checkbox>
             <el-checkbox label="1" name="type">合同审核</el-checkbox>
             <el-checkbox label="2" name="type">订单审核</el-checkbox>
@@ -79,12 +83,12 @@
       <el-form-item v-if="ruleForm.type != 2" label="合同权限" prop="signContract">
         <el-checkbox
           v-if="ruleForm.type !=3"
-          v-model="ruleForm.signContract"
+          v-model="signContract"
           :label="ruleForm.type == 1?'签署合同':'发起合同'"
         ></el-checkbox>
         <template v-else>
-          <el-radio v-model="ruleForm.signContract1" label="1">签署合同</el-radio>
-          <el-radio v-model="ruleForm.signContract1" label="2">发起合同</el-radio>
+          <el-radio v-model="signContract1" label="1">签署合同</el-radio>
+          <el-radio v-model="signContract1" label="2">发起合同</el-radio>
         </template>
       </el-form-item>
     </el-form>
@@ -118,6 +122,7 @@ export default {
       }
     };
     return {
+      noticeType: [],
       ruleForm: {
         type: 1,
         name: "",
@@ -127,11 +132,13 @@ export default {
         role: "",
         phone: "",
         email: "",
-        noticeType: [],
-        signContract: "",
-        signContract1: "1",
-        organizationId:""
+
+        organizationId: ""
       },
+
+      signContract1: "1",
+      warn: false,
+      signContract: false,
       rules: {
         type: [
           { required: true, message: "请选择账户类型", trigger: "change" }
@@ -238,25 +245,34 @@ export default {
     },
     edit() {
       let row = this.editData;
-
-      this.ruleForm.noticeType = [];
-
+      this.noticeType = [];
       if (row.type == 1) {
-        // if (row.checkNotice == 1) {
-        //   this.ruleForm.noticeType.push("0");
-        // }
-        // if (row.contractCheckNotice == 1) {
-        //   this.ruleForm.noticeType.push("1");
-        // }
-        // if (row.orderCheckNotice == 1) {
-        //   this.ruleForm.noticeType.push("2");
-        // }
+        // A端用户
+
+        if (row.checkNotice == 1) {
+          this.noticeType.push("0");
+        }
+        if (row.contractCheckNotice == 1) {
+          this.noticeType.push("1");
+        }
+        if (row.orderCheckNotice == 1) {
+          this.noticeType.push("2");
+        }
       } else if (row.type == 0) {
+        // B端用户
+        this.signContract = row.signContract == 2 ? true : false;
         if (this.editData.role.category == 2) {
           this.isOrz = true;
         } else {
           this.isOrz = false;
         }
+      } else if (row.type == 3) {
+        //广告主用户
+        this.signContract1 = String(row.signContract);
+      } else if (row.type == 2) {
+        //cctv用户
+        // this.ruleForm.warn = row.checkNotice == 1 ? true : false;
+        this.warn = row.checkNotice == 1 ? true : false;
       }
       if (this.ruleForm.type != 3) {
         if (this.title == 2) {
@@ -264,9 +280,6 @@ export default {
         } else {
           this.ruleForm.role = "";
         }
-      }
-      if (row.type == 1) {
-        this.ruleForm.signContract = row.signContract == 1 ? true : false;
       }
     }
   },

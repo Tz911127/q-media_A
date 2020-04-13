@@ -268,6 +268,10 @@ export default {
       this.$refs.accountDialog.dialogVisible = true;
       this.$nextTick(() => {
         this.$refs.accountForm.$refs.ruleForm.resetFields();
+        this.$refs.accountForm.noticeType = [];
+        this.$refs.accountForm.signContract1 = "1";
+        this.$refs.accountForm.warn = false;
+        this.$refs.accountForm.signContract = false;
         this.$refs.accountForm.ruleForm = {
           type: 1,
           noticeType: [],
@@ -315,32 +319,36 @@ export default {
       } else if (this.title == 1) {
         this.$refs.accountForm.$refs.ruleForm.validate(valid => {
           let params = Object.assign({}, this.$refs.accountForm.ruleForm);
+          let warn = this.$refs.accountForm.warn;
+          let noticeType = this.$refs.accountForm.noticeType;
+
           params.roleId = params.role.id;
           params.ck = params.ck;
-          params.noticeType.indexOf("0") > -1
+          noticeType.indexOf("0") > -1
             ? (params.checkNotice = 1)
             : (params.checkNotice = 0);
-          params.noticeType.indexOf("1") > -1
+          noticeType.indexOf("1") > -1
             ? (params.contractCheckNotice = 1)
             : (params.contractCheckNotice = 0);
-          params.noticeType.indexOf("2") > -1
+          noticeType.indexOf("2") > -1
             ? (params.orderCheckNotice = 1)
             : (params.orderCheckNotice = 0);
           if (params.type == 2) {
-            if (params.warn) {
+            if (warn) {
               params.checkNotice = 1;
             } else {
               params.checkNotice = 0;
             }
           } else {
-            if (params.warn) {
+            if (warn) {
               params.smsNotice = 1;
             } else {
               params.smsNotice = 0;
             }
           }
           if (params.type == 3) {
-            params.signContract = params.signContract1 == "1" ? 1 : 2;
+            params.signContract =
+              this.$refs.accountForm.signContract1 == "1" ? 1 : 2;
           } else if (params.type == 0) {
             params.signContract = params.signContract == true ? 2 : 0;
           } else if (params.type == 1) {
@@ -350,34 +358,59 @@ export default {
           postUser(params).then(res => {
             this.getData();
             this.toast("操作成功", "success");
+            // this.$refs.accountForm.noticeType = [];
+            // this.$refs.accountForm.signContract1 = "1";
+            // this.$refs.accountForm.warn = false;
+            // this.$refs.accountForm.signContract = false;
             this.$refs.accountDialog.dialogVisible = false;
           });
         });
       } else {
+        //编辑
         let params = Object.assign({}, this.$refs.accountForm.ruleForm);
+        let noticeType = this.$refs.accountForm.noticeType;
 
+        noticeType.indexOf("0") > -1
+          ? (params.checkNotice = 1)
+          : (params.checkNotice = 0);
+        noticeType.indexOf("1") > -1
+          ? (params.contractCheckNotice = 1)
+          : (params.contractCheckNotice = 0);
+        noticeType.indexOf("2") > -1
+          ? (params.orderCheckNotice = 1)
+          : (params.orderCheckNotice = 0);
         if (params.type == 3) {
-          params.signContract = params.signContract1 == "1" ? 1 : 2;
+          params.signContract =
+            this.$refs.accountForm.signContract1 == "1" ? 1 : 2;
         } else if (params.type == 0) {
-          params.signContract = params.signContract == true ? 2 : 0;
+          // params.signContract = params.signContract == true ? 2 : 0;
+          params.signContract =
+            this.$refs.accountForm.signContract == true ? 2 : 0;
         } else if (params.type == 1) {
           params.signContract = params.signContract == true ? 1 : 0;
+        } else if (params.type == 2) {
+          params.checkNotice = this.$refs.accountForm.warn == true ? 1 : 0;
         }
 
         patchUser(params).then(res => {
           this.getData();
           this.toast("操作成功", "success");
+          // this.$refs.accountForm.noticeType = [];
+          // this.$refs.accountForm.signContract1 = "1";
+          // this.$refs.accountForm.warn = false;
+          // this.$refs.accountForm.signContract = false;
           this.$refs.accountDialog.dialogVisible = false;
         });
       }
     },
     edit(row) {
+      console.log(row);
       this.title = 2;
       this.accountData = Object.assign({}, row);
       this.$refs.accountDialog.dialogVisible = true;
       this.$nextTick(() => {
         this.$refs.accountForm.$refs.ruleForm.clearValidate();
-        this.$refs.accountForm.blurOrz()
+        this.$refs.accountForm.blurOrz();
       });
     }
   }

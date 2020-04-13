@@ -10,9 +10,12 @@
         </el-aside>
         <el-main>
           <div v-if="isDetail">
-            <el-breadcrumb separator="/" v-if="title=='组织机构'">
-              <el-breadcrumb-item :to="{ path: '/business' }" v-if="title=='组织机构'">组织机构</el-breadcrumb-item>
-              <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+            <el-breadcrumb separator="/" v-if="title=='组织机构'||title=='企业'">
+              <el-breadcrumb-item :to="{ path: '/business' }" v-if="title=='组织机构'||title=='企业'">企业管理</el-breadcrumb-item>
+              <el-breadcrumb-item>
+                <span v-if="title=='企业'">{{isEdit?'编辑':'添加'}}</span>
+                <span>{{title}}</span>
+              </el-breadcrumb-item>
             </el-breadcrumb>
 
             <div class="page-title" v-else>{{title}}</div>
@@ -39,7 +42,8 @@ export default {
     return {
       transitionName: "fade",
       title: "",
-      isDetail: true
+      isDetail: true,
+      isEdit: true
     };
   },
   computed: {
@@ -50,6 +54,9 @@ export default {
   created() {
     this.$root.eventHub.$on("isDetail", isDetail => {
       this.isDetail = isDetail;
+    });
+    this.$root.eventHub.$on("isEdit", isEdit => {
+      this.isEdit = isEdit;
     });
   },
   watch: {

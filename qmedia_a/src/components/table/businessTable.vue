@@ -39,8 +39,8 @@
           </div>
         </div>
         <div style="margin:15px 0">
-          <el-button type="success">
-            <i class="el-icon-plus" @click="addBusiness"></i>添加企业
+          <el-button type="success" @click="addBusiness">
+            <i class="el-icon-plus"></i>添加企业
           </el-button>
         </div>
       </template>
@@ -201,7 +201,14 @@ export default {
         this.authRow = row;
       }
     },
-    editBusiness(row) {},
+    editBusiness(row) {
+      // console.log(row);
+      this.$root.eventHub.$emit("isEdit", true);
+      this.$router.push({
+        path: "/addBusinessForm",
+        query: { data: JSON.stringify(row), type: 1 }
+      });
+    },
     enableBusiness(row) {
       let that = this;
       this.confirm(`确认切换账号状态？`, "", {
@@ -297,7 +304,13 @@ export default {
       this.tableParams.keyOrName = this.keyOrName;
       this.getData();
     },
-    addBusiness(){}
+    addBusiness() {
+      this.$root.eventHub.$emit("isEdit", false);
+      this.$router.push({
+        path: "/addBusinessForm",
+        query: { type: 0 }
+      });
+    }
   },
   mounted() {}
 };

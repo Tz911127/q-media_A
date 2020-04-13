@@ -77,3 +77,17 @@ export const setCompanyFill = (params) => {
         method: 'patch'
     })
 }
+export const postCompany = (data) => {
+    return axios.request({
+        url: '/api/company',
+        data: data,
+        method: 'post'
+    })
+}
+export const patchCompany = (data) => {
+    return axios.request({
+        url: '/api/company',
+        data: data,
+        method: 'patch'
+    })
+}

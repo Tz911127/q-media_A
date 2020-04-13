@@ -171,3 +171,53 @@ export function filtersType(num) {
         return "插播";
     }
 }
+
+export function filterCheck(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] == "一级审核") {
+            arr[i] = 1;
+        }
+        if (arr[i] == "二级审核") {
+            arr[i] = 2;
+        }
+        if (arr[i] == "三级审核") {
+            arr[i] = 3;
+        }
+        if (arr[i] == "四级审核") {
+            arr[i] = 4;
+        }
+    }
+    arr = this.sort(arr);
+    return arr;
+}
+export function sort(arr) {
+    for (var j = 0; j < arr.length - 1; j++) {
+        //两两比较，如果前一个比后一个大，则交换位置。
+        for (var i = 0; i < arr.length - 1 - j; i++) {
+            if (arr[i] > arr[i + 1]) {
+                var temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
+
+export function filterReCheck(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] == 1) {
+            arr[i] = '一级审核';
+        }
+        if (arr[i] == 2) {
+            arr[i] = '二级审核';
+        }
+        if (arr[i] == 3) {
+            arr[i] = '三级审核';
+        }
+        if (arr[i] == 4) {
+            arr[i] = '四级审核';
+        }
+    }
+    return arr
+}

@@ -70,6 +70,18 @@ export default {
                 callback();
             }
         };
+        let validatorCode = (rule, value, callback) => {
+            var rex = this.regForm.key;
+            if (value == "") {
+                callback(new Error("请输入企业代码"));
+            } else if (!rex.test(value)) {
+                callback(new Error("请输入3-16位小写字母"));
+            } else {
+                callback();
+            }
+
+        };
+
         return {
             regexSets: {
                 passReg: /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{6,16}$/
@@ -86,6 +98,10 @@ export default {
                 pwdWord: /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/,
                 phone: /^1[345789]\d{9}$/,
                 rexEmail: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+
+            },
+            regForm: {
+                key: /^[a-z]{3,16}]?$/,
 
             }
         }

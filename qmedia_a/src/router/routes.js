@@ -27,7 +27,7 @@ import orderReport from '../components/report/orderReport'
 import dataReport from '../components/report/dataReport'
 import rolePage from '../components/role/role.vue'
 import account from '../components/role/account.vue'
-
+import addBusinessForm from '../components/form/addBusinessForm'
 
 Vue.use(VueRouter)
 
@@ -266,6 +266,16 @@ const routes = [{
                     hideInMenu: true,
                 },
                 component: org,
+            },
+            {
+                path: '/addBusinessForm',
+                name: 'addBusinessForm',
+                access: '-1',
+                meta: {
+                    title: '企业',
+                    hideInMenu: true,
+                },
+                component: addBusinessForm
             }
         ]
     },
