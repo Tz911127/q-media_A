@@ -117,7 +117,7 @@ export default {
           render: (h, row) => {
             let operateList = [
               {
-                isShow: true,
+                isShow:  this.perms("81"),
                 title: "详情",
                 icon: "el-icon-tickets",
                 method: () => this.orderDetail(row)

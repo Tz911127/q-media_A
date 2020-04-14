@@ -28,7 +28,7 @@
         </div>
         <div>
           <div style="margin: 15px 0;">
-            <el-button type="success" @click="addVersion">
+            <el-button type="success" @click="addVersion" v-if="perms('121')">
               <i class="el-icon-plus"></i> 添加版本
             </el-button>
           </div>
@@ -90,19 +90,19 @@ export default {
           render: (h, row) => {
             let operateList = [
               {
-                isShow: true,
+                isShow: this.perms("123"),
                 title: "删除",
                 icon: "el-icon-delete",
                 method: () => this.deleteDevice(row)
               },
               {
-                isShow: true,
+                isShow: this.perms("122"),
                 title: "下载",
                 icon: "el-icon-download",
                 method: () => this.downDevice(row)
               },
               {
-                isShow: true,
+                isShow: this.perms("122"),
                 title: "查看版本功能",
                 icon: "el-icon-view",
                 method: () => this.reviewDevice(row)

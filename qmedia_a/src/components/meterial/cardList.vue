@@ -19,8 +19,8 @@
       <el-button type="primary" v-if="!disabled" @click="check">批量操作</el-button>
       <div v-if="disabled">
         <el-button @click="check">取消批量</el-button>
-        <el-button type="primary" @click="checkEnable(1)">素材启用</el-button>
-        <el-button type="danger" @click="checkEnable(0)">素材停用</el-button>
+        <el-button type="primary" v-if="perms('41')" @click="checkEnable(1)">素材启用</el-button>
+        <el-button type="danger" v-if="perms('41')" @click="checkEnable(0)">素材停用</el-button>
       </div>
     </div>
     <el-row style="margin:-7.5px">

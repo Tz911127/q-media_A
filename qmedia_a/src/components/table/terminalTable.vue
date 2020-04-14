@@ -94,27 +94,42 @@
               <el-button type="text">重启</el-button>
               <el-button type="text">磁盘清理</el-button>
               <el-button type="text" size="mini">获取运行日志</el-button>
-              <el-button slot="reference" type="success" :disabled="disabled">
+              <el-button slot="reference" type="success" :disabled="disabled" v-if="perms('33')">
                 发布命令
                 <i class="el-icon-arrow-down"></i>
               </el-button>
             </el-popover>
           </el-tooltip>
-          <v-tooltip :content="`终端升级`" :type="`success`" :onSubmit="devicesUp" :disabled="disabled"></v-tooltip>
+          <v-tooltip
+            :content="`终端升级`"
+            :type="`success`"
+            :onSubmit="devicesUp"
+            :disabled="disabled"
+            v-if="perms('35')"
+          ></v-tooltip>
           <v-tooltip
             :content="`终端启用`"
             :disabled="disabled"
             :type="`success`"
             :onSubmit="devicesEnable"
+            v-if="perms('32')"
           ></v-tooltip>
           <v-tooltip
+            v-if="perms('31')"
             :content="`设置开关机时间`"
             :disabled="disabled"
             :type="`warning`"
             :onSubmit="setTime"
           ></v-tooltip>
-          <v-tooltip :content="`设置音量`" :disabled="disabled" :type="`warning`" :onSubmit="setVolue"></v-tooltip>
           <v-tooltip
+            v-if="perms('31')"
+            :content="`设置音量`"
+            :disabled="disabled"
+            :type="`warning`"
+            :onSubmit="setVolue"
+          ></v-tooltip>
+          <v-tooltip
+            v-if="perms('32')"
             :content="`终端停用`"
             :disabled="disabled"
             :type="`danger`"
@@ -226,7 +241,7 @@ export default {
                 method: () => this.playDevice(row)
               },
               {
-                isShow: row.del == 1 ? false : true,
+                isShow: (row.del == 1 ? false : true) && this.perms("34"),
                 title: "删除",
                 icon: "el-icon-delete",
                 method: () => this.delDevice(row)

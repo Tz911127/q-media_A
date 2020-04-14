@@ -13,8 +13,7 @@
         <el-input type="textarea" v-model="form.resolutions"></el-input>
         <span class="el-upload__tip" style="display:block">小写字母，多个格式用,分隔</span>
       </el-form-item>
-      <!-- v-if="perms('111')" -->
-      <el-form-item>
+      <el-form-item v-if="perms('111')">
         <el-button type="primary" @click="onSubmit">保存</el-button>
       </el-form-item>
     </el-form>

@@ -10,10 +10,10 @@
     >
       <template slot="tableHeader">
         <div style="margin: 15px 0;">
-          <el-button type="success" @click="addDevice">
+          <el-button type="success" @click="addDevice" v-if="perms('141')">
             <i class="el-icon-plus"></i> 添加适配程序
           </el-button>
-          <el-button type="success" @click="setDevice">
+          <el-button type="success" @click="setDevice" v-if="perms('143')">
             <i class="el-icon-plus"></i> 设置主程序
           </el-button>
         </div>
@@ -58,7 +58,7 @@ export default {
           render: (h, row) => {
             let operateList = [
               {
-                isShow: true,
+                isShow: this.perms('142'),
                 title: "删除",
                 icon: "el-icon-delete",
                 method: () => this.deleteDevice(row)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-tabs style="backdround:#fff;padding:10px" @tab-click="handleClick">
-      <el-tab-pane>
+      <el-tab-pane v-if="perms('61')">
         <span slot="label">
           <span>一级审核</span>
           <span class="platFont">{{extra.platformLv1}}</span>
@@ -20,7 +20,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane v-if="perms('62')">
         <span slot="label">
           <span>二级审核</span>
           <span class="platFont">{{extra.platformLv2}}</span>
@@ -39,7 +39,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane v-if="perms('63')">
         <span slot="label">
           <span>三级审核</span>
           <span class="platFont">{{extra.platformLv3}}</span>
@@ -58,7 +58,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane v-if="perms('64')">
         <span slot="label">
           <span>四级审核</span>
           <span class="platFont">{{extra.platformLv4}}</span>

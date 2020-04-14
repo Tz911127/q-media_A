@@ -39,7 +39,7 @@
           </div>
         </div>
         <div style="margin:15px 0">
-          <el-button type="success" @click="addBusiness">
+          <el-button type="success" @click="addBusiness" v-if="perms('21')">
             <i class="el-icon-plus"></i>添加企业
           </el-button>
         </div>
@@ -120,19 +120,19 @@ export default {
           render: (h, row) => {
             let operateList = [
               {
-                isShow: true,
+                isShow: this.perms('21'),
                 title: "编辑",
                 icon: "el-icon-edit",
                 method: () => this.editBusiness(row)
               },
               {
-                isShow: true,
+                isShow: this.perms('22'),
                 title: row.enabled == 0 ? "启用" : "冻结",
                 icon: row.enabled == 0 ? "el-icon-unlock" : "el-icon-lock",
                 method: () => this.enableBusiness(row)
               },
               {
-                isShow: row.type == 0 ? true : false,
+                isShow: (row.type == 0 ? true : false)&&this.perms('24'),
                 title: "设置组织机构",
                 icon: "el-icon-tickets",
                 method: () => {
@@ -143,7 +143,7 @@ export default {
                 }
               },
               {
-                isShow: row.type == 0 ? true : false,
+                isShow: (row.type == 0 ? true : false)&&this.perms('23'),
                 title: "设置垫播",
                 icon: "el-icon-files",
                 method: () => this.setFill(row)

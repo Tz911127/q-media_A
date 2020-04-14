@@ -15,6 +15,7 @@ import audit from '../views/audit.vue'
 import order from '../views/order.vue'
 import command from '../views/command.vue'
 import role from '../views/role.vue'
+import contract from '../views/contract.vue'
 import dataSystem from '../components/sytemManage/dataSystem.vue'
 import versionSystem from '../components/sytemManage/versionSystem.vue'
 import ararManege from '../components/sytemManage/ararManege.vue'
@@ -50,7 +51,7 @@ const routes = [{
             {
                 path: '/system',
                 name: 'system',
-                access: '-1',
+                access: '1',
                 meta: {
                     title: '系统管理',
                     hideInMenu: false,
@@ -60,6 +61,7 @@ const routes = [{
                 children: [{
                         path: 'dataSystem',
                         name: 'dataSystem',
+                        access: '11',
                         meta: {
                             title: '数据配置',
                         },
@@ -69,6 +71,7 @@ const routes = [{
                     {
                         path: 'versionSystem',
                         name: 'versionSystem',
+                        access: '12',
                         meta: {
                             title: '版本管理',
                         },
@@ -78,6 +81,7 @@ const routes = [{
                     {
                         path: 'ararManege',
                         name: 'ararManege',
+                        access: '13',
                         meta: {
                             title: '地域管理',
                         },
@@ -87,6 +91,7 @@ const routes = [{
                     {
                         path: 'terminalUpload',
                         name: 'terminalUpload',
+                        access: '14',
                         meta: {
                             title: '终端下载',
                         },
@@ -98,7 +103,7 @@ const routes = [{
             {
                 path: "/business",
                 name: 'business',
-                access: '-1',
+                access: '2',
                 meta: {
                     title: '企业管理',
                     hideInMenu: false,
@@ -109,7 +114,7 @@ const routes = [{
             {
                 path: '/terminal',
                 name: 'terminal',
-                access: '-1',
+                access: '3',
                 meta: {
                     title: '终端管理',
                     hideInMenu: false,
@@ -120,7 +125,7 @@ const routes = [{
             {
                 path: '/meterial',
                 name: 'meterial',
-                access: '-1',
+                access: '4',
                 meta: {
                     title: '素材管理',
                     hideInMenu: false,
@@ -131,7 +136,7 @@ const routes = [{
             {
                 path: '/program',
                 name: 'program',
-                access: '-1',
+                access: '5',
                 meta: {
                     title: '广告管理',
                     hideInMenu: false,
@@ -141,6 +146,7 @@ const routes = [{
                 children: [{
                     path: 'programPage',
                     name: 'programPage',
+                    access: '51',
                     meta: {
                         title: '广告管理',
                     },
@@ -148,6 +154,7 @@ const routes = [{
                 }, {
                     path: 'notice',
                     name: 'notice',
+                    access: '52',
                     meta: {
                         title: '紧急通知',
                     },
@@ -157,7 +164,7 @@ const routes = [{
             {
                 path: '/audit',
                 name: 'audit',
-                access: '-1',
+                access: '6',
                 meta: {
                     title: '审核管理',
                     hideInMenu: false,
@@ -166,9 +173,20 @@ const routes = [{
                 component: audit,
             },
             {
+                path: '/contract',
+                name: 'contract',
+                access: '7',
+                meta: {
+                    title: '合同管理',
+                    hideInMenu: false,
+                    icon: 'el-icon-notebook-1',
+                },
+                component: contract,
+            },
+            {
                 path: '/order',
                 name: 'order',
-                access: '-1',
+                access: '8',
                 meta: {
                     title: '订单管理',
                     hideInMenu: false,
@@ -189,6 +207,7 @@ const routes = [{
                 children: [{
                         path: 'terminalReport',
                         name: 'terminalReport',
+                        access: '-1',
                         meta: {
                             title: '终端统计',
                         },
@@ -197,6 +216,7 @@ const routes = [{
                     {
                         path: 'adReport',
                         name: 'adReport',
+                        access: '-1',
                         meta: {
                             title: '广告统计',
                         },
@@ -205,6 +225,7 @@ const routes = [{
                     {
                         path: 'orderReport',
                         name: 'orderReport',
+                        access: '-1',
                         meta: {
                             title: '合同统计',
                         },
@@ -213,6 +234,7 @@ const routes = [{
                     {
                         path: 'dataReport',
                         name: 'dataReport',
+                        access: '-1',
                         meta: {
                             title: '数据统计',
                         },
@@ -223,7 +245,7 @@ const routes = [{
             {
                 path: '/role',
                 name: 'role',
-                access: '-1',
+                access: '9',
                 meta: {
                     title: '账户中心',
                     hideInMenu: false,
@@ -249,7 +271,7 @@ const routes = [{
             {
                 path: '/command',
                 name: 'command',
-                access: '-1',
+                access: 'a',
                 meta: {
                     title: '日志记录',
                     hideInMenu: false,
@@ -270,7 +292,7 @@ const routes = [{
             {
                 path: '/addBusinessForm',
                 name: 'addBusinessForm',
-                access: '-1',
+                access: '2',
                 meta: {
                     title: '企业',
                     hideInMenu: true,

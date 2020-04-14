@@ -65,6 +65,13 @@ export default {
                         return this.userInfo.cdnVideoUrl + src
                     }
                 },
+                perms(access) {
+                    if (this.$store.state.user.access.indexOf(access.toString()) > -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
             }
         })
     }

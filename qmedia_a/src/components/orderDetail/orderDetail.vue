@@ -7,8 +7,8 @@
       <div>
         <span>订单状态：{{state==0?'待审核':state==1?'待播放':state==2?'播放中':state==3?'已停播':state==4?'订单完成':'审核不通过'}}</span>
         <span v-if="state==0">
-          <el-button type="primary" @click="checkPass">审核通过</el-button>
-          <el-button type="warning" @click="checkNo">审核不通过</el-button>
+          <el-button type="primary" @click="checkPass" v-if="perms('82')">审核通过</el-button>
+          <el-button type="warning" @click="checkNo" v-if="perms('82')">审核不通过</el-button>
         </span>
         <span
           style="color:#333333;font-size:16px"
