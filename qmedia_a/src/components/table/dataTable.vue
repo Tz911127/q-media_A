@@ -66,6 +66,7 @@ import basicTable from "./components/basicTable";
 import addReport from "../form/addReport";
 import reportForm from "../form/reportForm";
 import { getReportJob, delReportJob, postReportJob } from "@/api/report.js";
+const FileSaver = require('file-saver');
 export default {
   components: {
     basicTable,
@@ -142,7 +143,7 @@ export default {
                 title: "下载",
                 icon: "el-icon-download",
                 method: row => {
-                  window.open(this.userInfo.cdnImgUrl + row.path);
+                  FileSaver.saveAs(this.userInfo.cdnImgUrl + row.path, row.name+row.start+'-'+row.end);
                 }
               },
               {
