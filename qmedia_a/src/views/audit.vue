@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-tabs style="backdround:#fff;padding:10px" @tab-click="handleClick">
-      <el-tab-pane v-if="perms('61')">
+    <el-tabs style="backdround:#fff;padding:10px" @tab-click="handleClick" v-model="activeName">
+      <el-tab-pane v-if="perms('61')" name="first">
         <span slot="label">
           <span>一级审核</span>
           <span class="platFont">{{extra.platformLv1}}</span>
@@ -20,7 +20,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane v-if="perms('62')">
+      <el-tab-pane v-if="perms('62')" name="second">
         <span slot="label">
           <span>二级审核</span>
           <span class="platFont">{{extra.platformLv2}}</span>
@@ -39,7 +39,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane v-if="perms('63')">
+      <el-tab-pane v-if="perms('63')" name="third">
         <span slot="label">
           <span>三级审核</span>
           <span class="platFont">{{extra.platformLv3}}</span>
@@ -58,7 +58,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane v-if="perms('64')">
+      <el-tab-pane v-if="perms('64')" name="fourth">
         <span slot="label">
           <span>四级审核</span>
           <span class="platFont">{{extra.platformLv4}}</span>
@@ -77,7 +77,7 @@
           @handleClose="handleClose"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="fifth">
         <span slot="label">审核通过</span>
         <audit-table
           ref="check5"
@@ -92,7 +92,7 @@
           @handleCurrentChange="handleCurrentChange"
         ></audit-table>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="sixth">
         <span slot="label">审核不通过</span>
         <audit-table
           ref="check6"
@@ -134,42 +134,62 @@ export default {
         page: 0,
         limit: 10
       },
-      tab: 0
+      tab: 0,
+      activeName: "first",
+      tabName: ""
     };
   },
+
   methods: {
     handleClick(tab, event) {
       this.tab = JSON.parse(tab.index);
+      this.tabName = tab.name;
       this.tableParams.page = 0;
       this.tableParams.limit = 10;
       this.tableParams.flowType = "";
       this.tableParams.platformCheckType = "";
       this.tableParams.targetName = "";
       this.tableParams.ck = "";
-      if (tab.index < 4) {
-        this.tableParams.status = "";
-        this.tableParams.platformCurrentLevel = Number(tab.index) + 1;
+
+      if (tab.name == "sixth") {
+        this.tableParams.status = 5;
+        this.tableParams.platformCurrentLevel = "";
         this.getCheckData();
-      } else if (tab.index == 4) {
+      } else if (tab.name == "fifth") {
         this.tableParams.status = 1;
         this.tableParams.platformCurrentLevel = "";
         this.getCheckData();
-      } else if (tab.index == 5) {
-        this.tableParams.status = 5;
-        this.tableParams.platformCurrentLevel = "";
+      } else {
+        this.tableParams.platformCurrentLevel =
+          tab.name == "first"
+            ? 1
+            : tab.name == "second"
+            ? 2
+            : tab.name == "third"
+            ? 3
+            : 4;
+        this.tableParams.status = "";
         this.getCheckData();
       }
     },
     getData() {
-      if (this.tab < 4) {
-        this.tableParams.platformCurrentLevel = this.tab + 1;
-      } else if (this.tab == 4) {
+      if (this.activeName == "fifth") {
         this.tableParams.platformCurrentLevel = "";
         this.status = 1;
-      } else {
+      } else if (this.activeName == "sixth") {
         this.tableParams.platformCurrentLevel = "";
         this.status = 5;
+      } else {
+        this.tableParams.platformCurrentLevel =
+          this.activeName == "first"
+            ? 1
+            : this.activeName == "second"
+            ? 2
+            : this.activeName == "third"
+            ? 3
+            : 4;
       }
+
       this.getCheckData();
     },
     getCheckData() {
@@ -180,11 +200,15 @@ export default {
           this.extra = res.extra;
           this.data = res.data;
           this.total = res.total;
-          let extraTotal =
-            this.extra.platformLv1 +
-            this.extra.platformLv2 +
-            this.extra.platformLv3 +
-            this.extra.platformLv4;
+          let extraTotal = this.extra.platformLv1
+            ? this.extra.platformLv1
+            : 0 + this.extra.platformLv2
+            ? this.extra.platformLv2
+            : 0 + this.extra.platformLv3
+            ? this.extra.platformLv3
+            : 0 + this.extra.platformLv4
+            ? this.extra.platformLv4
+            : 0;
           this.$root.eventHub.$emit("extraTotal", extraTotal);
         })
         .catch(err => {});
@@ -198,22 +222,22 @@ export default {
       this.search();
     },
     search() {
-      if (this.tab == 0) {
+      if (this.tabName == "first") {
         this.tableParams.ck = this.$refs.check1.searchObj.ck;
         this.tableParams.targetName = this.$refs.check1.searchObj.targetName;
-      } else if (this.tab == 1) {
+      } else if (this.tabName == "second") {
         this.tableParams.ck = this.$refs.check2.searchObj.ck;
         this.tableParams.targetName = this.$refs.check2.searchObj.targetName;
-      } else if (this.tab == 2) {
+      } else if (this.tabName == "third") {
         this.tableParams.ck = this.$refs.check3.searchObj.ck;
         this.tableParams.targetName = this.$refs.check3.searchObj.targetName;
-      } else if (this.tab == 3) {
+      } else if (this.tabName == "fourth") {
         this.tableParams.ck = this.$refs.check4.searchObj.ck;
         this.tableParams.targetName = this.$refs.check4.searchObj.targetName;
-      } else if (this.tab == 4) {
+      } else if (this.tabName == "fifth") {
         this.tableParams.ck = this.$refs.check5.searchObj.ck;
         this.tableParams.targetName = this.$refs.check5.searchObj.targetName;
-      } else if (this.tab == 5) {
+      } else if (this.tabName == "sixth") {
         this.tableParams.ck = this.$refs.check6.searchObj.ck;
         this.tableParams.targetName = this.$refs.check6.searchObj.targetName;
       }
@@ -250,8 +274,35 @@ export default {
     }
   },
   mounted() {
-    this.tableParams.platformCurrentLevel = 1;
-    this.getCheckData();
+    setTimeout(() => {
+      this.activeName = this.perms("61")
+        ? "first"
+        : this.perms("62")
+        ? "second"
+        : this.perms("63")
+        ? "third"
+        : this.perms("64")
+        ? "fourth"
+        : "fifth";
+
+      this.tableParams.platformCurrentLevel = this.perms("61")
+        ? 1
+        : this.perms("62")
+        ? 2
+        : this.perms("63")
+        ? 3
+        : this.perms("64")
+        ? 4
+        : "";
+      this.tableParams.status =
+        this.perms("61") ||
+        this.perms("62") ||
+        this.perms("63") ||
+        this.perms("64")
+          ? ""
+          : 1;
+      this.getCheckData();
+    }, 500);
   }
 };
 </script>

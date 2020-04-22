@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :id="id" ref="addTerminal" style="height:300px"></div>
+    <div :id="id" ref="addTerminal" style="height:300px;"></div>
   </div>
 </template>
 

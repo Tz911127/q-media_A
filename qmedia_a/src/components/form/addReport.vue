@@ -109,7 +109,7 @@ export default {
         { name: "终端数量", val: "0" },
         { name: "在线时长", val: "1" },
         { name: "播放时长（全部企业）", val: "2" },
-        { name: "播放时长（个别企业）", val: "3" }
+        { name: "播放时长（单个企业）", val: "3" }
       ],
       //报表类型
 
@@ -122,7 +122,7 @@ export default {
       //广告业务
       ads: [
         { name: "广告数量", val: "0" },
-        { name: "广告播放时长(单位企业）", val: "1" }
+        { name: "广告播放时长(单个企业）", val: "1" }
       ],
 
       isMonth: false,

@@ -56,10 +56,16 @@
     >
       <meterial-form v-if="rowData.type==0" :data="detailRow" @click="click"></meterial-form>
       <program-form v-else :data="detailRow"></program-form>
-      <el-dialog width="30%" title="审核不通过原因" :visible.sync="innerVisible" append-to-body>
+      <el-dialog
+        width="30%"
+        title="审核不通过原因"
+        :visible.sync="innerVisible"
+        append-to-body
+        :before-close="beforeClose"
+      >
         <el-input type="textarea" :rows="2" placeholder="请输入审核不通过的原因" v-model.trim="textarea"></el-input>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="innerVisible=false">取 消</el-button>
+          <el-button @click="beforeClose">取 消</el-button>
           <el-button type="success" @click="submitPass">确 定</el-button>
         </span>
       </el-dialog>
@@ -186,6 +192,7 @@ export default {
       textarea: ""
     };
   },
+
   methods: {
     detail(row) {
       this.rowData = row;
@@ -201,6 +208,10 @@ export default {
           this.$store.commit("SET_PROGRAM_CONTENT", this.programContent);
         }
       });
+    },
+    beforeClose() {
+      this.textarea = "";
+      this.innerVisible = false;
     },
     typeChange(val) {
       this.$emit("typeChange", val);

@@ -2,7 +2,12 @@
   <div>
     <div class="report clearfix">
       <el-col :span="16">
-        <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
+          v-loading="loading"
+          style="height:400px"
+        >
           <el-tab-pane label="新增广告（审核通过）" name="first">
             <div style="text-align:right">
               <el-date-picker
@@ -17,12 +22,14 @@
                 value-format="yyyyMM"
               ></el-date-picker>
             </div>
+
             <terminal-add
               v-if="activeName=='first'"
               :dataMonth="dataMonth"
               :value="value"
               :title="`新增广告`"
               :flag="addAD"
+              :id="`adFirst`"
               ref="terminalAdd"
             ></terminal-add>
           </el-tab-pane>
@@ -40,12 +47,14 @@
                 value-format="yyyyMM"
               ></el-date-picker>
             </div>
+
             <terminal-add
               v-if="activeName=='second'"
               :dataMonth="playDataMonth"
               :value="playValue"
               :title="`广告时长/小时`"
               :flag="ADtimeFlag"
+              :id="`adSecond`"
               ref="terminalOnline"
             ></terminal-add>
           </el-tab-pane>
@@ -68,6 +77,7 @@
 </template>
 
 <script>
+var echarts = require("echarts");
 import terminalAdd from "./terminalTab/terminalAdd";
 import terminalList from "./common/terminalList";
 import addReportTable from "../table/addReportTable";
@@ -122,14 +132,12 @@ export default {
   watch: {
     opened(val) {
       if (this.tabIndex == 0) {
-        this.$refs.terminalAdd.flag = false;
         this.value = [];
         this.dataMonth = [];
         setTimeout(() => {
           this.getIncrementData();
         }, 200);
       } else {
-        this.$refs.terminalOnline.flag = false;
         this.playValue = [];
         this.playDataMonth = [];
         setTimeout(() => {
@@ -144,25 +152,43 @@ export default {
       let params = this.month;
       this.$refs.terminalAdd.loading = true;
       this.addAD = false;
-      getProgramIncrement(params).then(res => {
-        this.$refs.terminalAdd.loading = false;
-        this.addAD = true;
-        for (let i in res) {
-          this.value.push(res[i].count);
-          this.dataMonth.push(this.$filters.formateDate(res[i].m));
-        }
-      });
+      getProgramIncrement(params)
+        .then(res => {
+          this.$refs.terminalAdd.loading = false;
+          for (let i in res) {
+            this.value.push(res[i].count);
+            this.dataMonth.push(this.$filters.formateDate(res[i].m));
+          }
+          this.addAD = true;
+        })
+        .catch(res => {
+          if (res) {
+            this.month = {};
+            this.dateValue = "";
+            this.getIncrementData();
+          }
+        });
     },
+
     getPlayPage() {
       let params = this.playMonth;
-      getProgramDuration(params).then(res => {
-        this.ADtimeFlag = true;
-        this.$refs.terminalOnline.loading = false;
-        for (let i in res) {
-          this.playValue.push((res[i].duration / 3600).toFixed(2));
-          this.playDataMonth.push(this.$filters.formateDate(res[i].m));
-        }
-      });
+      this.ADtimeFlag = false;
+      getProgramDuration(params)
+        .then(res => {
+          this.ADtimeFlag = true;
+          this.$refs.terminalOnline.loading = false;
+          for (let i in res) {
+            this.playValue.push((res[i].duration / 3600).toFixed(2));
+            this.playDataMonth.push(this.$filters.formateDate(res[i].m));
+          }
+        })
+        .catch(res => {
+          if (res) {
+            this.playMonth = {};
+            this.playDataValue = "";
+            this.getPlayPage();
+          }
+        });
     },
     handleClick(val) {
       this.tabIndex = val.index;
@@ -237,6 +263,7 @@ export default {
       }
     }
   },
+
   mounted() {
     this.getIncrementData();
     this.getIncrementTop10Data(0);

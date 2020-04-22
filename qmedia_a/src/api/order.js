@@ -27,10 +27,18 @@ export const getProgramReview = (params) => {
         method: 'get'
     })
 }
-export const getOrderCount = (params)=>{
+export const getOrderCount = (params) => {
     return axios.request({
-        url:'/api/order/listOrderCount',
-        params:params,
-        method:'get'
+        url: '/api/order/listOrderCount',
+        params: params,
+        method: 'get'
+    })
+}
+
+export const checkOrder = (data) => {
+    return axios.request({
+        url: "/api/order/check",
+        data: data,
+        method: 'patch'
     })
 }

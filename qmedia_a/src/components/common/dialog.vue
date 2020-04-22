@@ -10,6 +10,7 @@
     :posting="posting"
     @close="closed"
     @open="open"
+    :before-close="beforeClose"
   >
     <slot></slot>
     <div v-if="showFooter" slot="footer" class="dialog-footer">
@@ -82,6 +83,10 @@ export default {
       } else {
         this.dialogVisible = false;
       }
+    },
+    beforeClose() {
+      this.$emit("beforeClose");
+      this.dialogVisible = false;
     }
   }
 };

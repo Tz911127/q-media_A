@@ -73,6 +73,7 @@
       ref="accountDialog"
       :title="title == 0?'修改密码':title == 1?'添加账户':'编辑账户'"
       @handleClose="handleClose"
+      @beforeClose="beforeClose"
     >
       <div v-if="title==0">
         <el-form
@@ -303,6 +304,9 @@ export default {
       this.title = 0;
       this.rowData = row;
     },
+    beforeClose() {
+      this.ruleForm.newPassWord = "";
+    },
     handleClose() {
       if (this.title == 0) {
         this.$refs.ruleForm.validate(valid => {
@@ -314,6 +318,7 @@ export default {
             this.getData();
             this.toast("操作成功", "success");
             this.$refs.accountDialog.dialogVisible = false;
+            this.ruleForm.newPassWord = "";
           });
         });
       } else if (this.title == 1) {

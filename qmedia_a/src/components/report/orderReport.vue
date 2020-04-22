@@ -47,6 +47,7 @@ export default {
     orderReportTable
   },
   data() {
+    let that = this;
     return {
       month: [],
       flag: false,
@@ -72,18 +73,26 @@ export default {
     getData() {
       this.flag = false;
       this.loading = true;
-      getContractReport(this.searchMonth).then(res => {
-        this.flag = true;
-        this.loading = false;
-        for (let i in res) {
-          this.paidValue.push((res[i].addMoneyTotal / 100).toFixed(2));
-          this.addValue.push((res[i].paidMoneyTotal / 100).toFixed(2));
-          this.addCount.push(
-            (res[i].paidMoneyTotal / 1000 / res[i].addCount).toFixed(2)
-          );
-          this.month.push(this.$filters.formateDate(String(res[i].month)));
-        }
-      });
+      getContractReport(this.searchMonth)
+        .then(res => {
+          this.flag = true;
+          this.loading = false;
+          for (let i in res) {
+            this.paidValue.push((res[i].addMoneyTotal / 100).toFixed(2));
+            this.addValue.push((res[i].paidMoneyTotal / 100).toFixed(2));
+            this.addCount.push(
+              (res[i].paidMoneyTotal / 1000 / res[i].addCount).toFixed(2)
+            );
+            this.month.push(this.$filters.formateDate(String(res[i].month)));
+          }
+        })
+        .catch(res => {
+          if (res) {
+            this.searchMonth = {};
+            this.dateValue = "";
+            this.getData();
+          }
+        });
     },
     getContractTop10Data() {
       let params = {
@@ -119,10 +128,10 @@ export default {
   },
   mounted() {
     this.loading = true;
-    setTimeout(() => {
-      this.flag = true;
-      this.loading = false;
-    }, 600);
+    // setTimeout(() => {
+    //   this.flag = true;
+    //   this.loading = false;
+    // }, 600);
     this.getData();
     this.getContractTop10Data();
   },

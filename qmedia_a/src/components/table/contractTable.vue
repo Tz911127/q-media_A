@@ -297,9 +297,9 @@ export default {
           return patchContract(params);
         },
         success() {
-          that.getData();
-          this.$refs.contractDialog.dialogVisible = false;
+          that.$refs.contractDialog.dialogVisible = false;
           that.toast("操作成功", "success");
+          that.getData();
         }
       });
     },
@@ -308,6 +308,10 @@ export default {
       this.$refs.innerVisible.dialogVisible = true;
     },
     handleClose() {
+      if (this.textarea == "") {
+        this.toast("请输入取消此合同的原因", "error");
+        return;
+      }
       let params = {
         status: 3,
         id: this.contractObj.id,

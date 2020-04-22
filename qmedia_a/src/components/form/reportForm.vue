@@ -17,7 +17,7 @@
       <el-form-item
         label="报表类型"
         v-if="termForm.countType"
-      >{{termForm.countType==0?'按天汇总(最多31天)':termForm.countType==1?'按月汇总':termForm.countType==2?'全部汇总':'明细'}}</el-form-item>
+      >{{termForm.countType==0?'全部汇总':termForm.countType==1?'按月汇总':termForm.countType==2?'按天汇总(最多31天)':'明细'}}</el-form-item>
       <el-form-item label="企业代码" v-if="termForm.ck">{{termForm.ck}}</el-form-item>
       <el-form-item
         label="日期"

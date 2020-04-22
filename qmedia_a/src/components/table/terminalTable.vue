@@ -86,15 +86,15 @@
             effect="dark"
             content="请选择在线终端"
             placement="top-start"
-            :disabled="!disabled"
+            :disabled="!disabled&&!orderDisabled"
             style="margin-right:15px "
           >
             <el-popover placement="bottom" width="50" trigger="click" :disabled="disabled">
-              <el-button style="margin-left:10px" type="text">截屏</el-button>
-              <el-button type="text">重启</el-button>
-              <el-button type="text">磁盘清理</el-button>
-              <el-button type="text" size="mini">获取运行日志</el-button>
-              <el-button slot="reference" type="success" :disabled="disabled" v-if="perms('33')">
+              <el-button style="margin-left:10px" type="text" @click="submit(0)">截屏</el-button>
+              <el-button type="text" @click="submit(1)">重启</el-button>
+              <el-button type="text" @click="submit(4)">磁盘清理</el-button>
+              <el-button type="text" size="mini" @click="submit(2)">获取运行日志</el-button>
+              <el-button slot="reference" type="success" :disabled="disabled||orderDisabled" v-if="perms('33')">
                 发布命令
                 <i class="el-icon-arrow-down"></i>
               </el-button>
@@ -177,7 +177,8 @@ import {
   getVersionFile,
   getDeviceVersion,
   delDeviceFile,
-  getDeviceProgram
+  getDeviceProgram,
+  postCommand
 } from "@/api/terminal";
 export default {
   components: {
@@ -296,6 +297,7 @@ export default {
       ],
       resolutes: [],
       disabled: true,
+      orderDisabled:true,
       selectList: [],
       title: 0,
       dialogParams: {
@@ -452,6 +454,37 @@ export default {
         this.getData();
       });
     },
+    submit(val) {
+      let that = this;
+      let deviceIds = [];
+      this.selectList.map(val => {
+        deviceIds.push(val.id);
+      });
+      let params = {
+        deviceIds: deviceIds,
+        type: val
+      };
+      this.confirm(
+        `确定` +
+          (val == 0
+            ? "截屏"
+            : val == 1
+            ? "重启"
+            : val == 2
+            ? "获取运行日志"
+            : "磁盘清理"),
+        "操作",
+        {
+          request: () => {
+            return postCommand(params);
+          },
+          success() {
+            that.getData();
+            that.toast("操作成功", "success");
+          }
+        }
+      );
+    },
     //终端启用
     devicesEnable() {
       this.enabled(1);
@@ -573,6 +606,9 @@ export default {
       }
     },
     selectionChange(val) {
+      this.orderDisabled = val.some(item => {
+        return item.state == 0;
+      });
       this.selectList = val;
       if (val.length != 0) {
         this.disabled = false;

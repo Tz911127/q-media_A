@@ -9,15 +9,22 @@
       @handleSizeChange="handleSizeChange"
       @handleCurrentChange="handleCurrentChange"
     ></dialog-table>
+
+    <v-dialog :width="`50%`" ref="adReportDialog" :showFooter="false" :title="`广告预览`">
+      <program-form :data="detailRow"></program-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import dialogTable from "./components/dialogTable";
 import { getProgramDetail } from "../../api/report";
+import { getProgramReview } from "@/api/order";
+import programForm from "@/components/form/programForm";
 export default {
   components: {
-    dialogTable
+    dialogTable,
+    programForm
   },
   props: {
     dialogTata: Array,
@@ -32,7 +39,10 @@ export default {
           overflow: true,
           render: (h, row) => {
             return (
-              <span   class={row.programDel == 1 ? "txt-red" : "btn-detail"}>
+              <span
+                onClick={() => this.review(row)}
+                class={row.programDel == 1 ? "txt-red" : "btn-detail"}
+              >
                 {this.$filters.filterPrograms(row.programName, row.programDel)}
               </span>
             );
@@ -66,7 +76,8 @@ export default {
           prop: "companyName"
         }
       ],
-      tableData: []
+      tableData: [],
+      detailRow: {}
     };
   },
   methods: {
@@ -75,6 +86,19 @@ export default {
     },
     handleCurrentChange(val) {
       this.$emit("handleCurrentChange", val);
+    },
+    review(e) {
+      console.log(e);
+      getProgramReview(e.programId).then(res => {
+        this.detailRow = res;
+        this.$refs.adReportDialog.dialogVisible = true;
+        this.programContent = {};
+        this.programContent.content = JSON.parse(res.content).pages;
+        this.programContent.pixelHorizontal = res.width;
+        this.programContent.pixelVertical = res.height;
+        this.programContent.programDialogType = 1;
+        this.$store.commit("SET_PROGRAM_CONTENT", this.programContent);
+      });
     }
   }
 };

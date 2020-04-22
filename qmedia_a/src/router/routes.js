@@ -231,12 +231,13 @@ const routes = [{
                         },
                         component: orderReport
                     },
+
                     {
                         path: 'dataReport',
                         name: 'dataReport',
                         access: '-1',
                         meta: {
-                            title: '数据统计',
+                            title: '数据导出',
                         },
                         component: dataReport
                     }
@@ -255,6 +256,7 @@ const routes = [{
                 children: [{
                     path: 'rolePage',
                     name: 'rolePage',
+                    access: '-1',
                     meta: {
                         title: '角色管理',
                     },
@@ -262,6 +264,7 @@ const routes = [{
                 }, {
                     path: 'account',
                     name: 'account',
+                    access: '-1',
                     meta: {
                         title: '账户管理',
                     },

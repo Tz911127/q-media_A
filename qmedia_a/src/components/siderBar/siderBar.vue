@@ -75,11 +75,15 @@ export default {
     getData() {
       let params = {};
       getCheckPage(params).then(res => {
-        this.value =
-          res.extra.platformLv1 +
-          res.extra.platformLv2 +
-          res.extra.platformLv3 +
-          res.extra.platformLv4;
+        this.value = res.extra.platformLv1
+          ? res.extra.platformLv1
+          : 0 + res.extra.platformLv2
+          ? res.extra.platformLv2
+          : 0 + res.extra.platformLv3
+          ? res.extra.platformLv3
+          : 0 + res.extra.platformLv4
+          ? res.extra.platformLv4
+          : 0;
       });
     }
   },

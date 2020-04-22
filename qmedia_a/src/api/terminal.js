@@ -78,3 +78,11 @@ export const getProgramDetail = (params) => {
         method: 'get'
     })
 }
+
+export const postCommand = (data) => {
+    return axios.request({
+        url: '/api/device/command',
+        data: data,
+        method: 'post'
+    })
+}

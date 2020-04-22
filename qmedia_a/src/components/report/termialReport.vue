@@ -2,7 +2,12 @@
   <div>
     <div class="report clearfix">
       <el-col :span="16">
-        <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
+          v-loading="loading"
+          style="height:400px"
+        >
           <el-tab-pane label="新增终端" name="first">
             <div style="text-align:right">
               <el-date-picker
@@ -24,6 +29,7 @@
               :title="`新增终端数`"
               :flag="addFlag"
               ref="addTermialNum"
+              :id="`terminalFirst`"
             ></terminal-add>
           </el-tab-pane>
           <el-tab-pane label="终端在线时长" name="second">
@@ -40,6 +46,7 @@
                 value-format="yyyyMM"
               ></el-date-picker>
             </div>
+
             <terminal-add
               v-if="activeName=='second'"
               :dataMonth="secondDataMonth"
@@ -47,6 +54,7 @@
               :title="`终端在线时长`"
               :flag="onlineFlag"
               ref="termialOnline"
+              :id="`terminalSecond`"
             ></terminal-add>
           </el-tab-pane>
           <el-tab-pane label="终端播放时长/小时" name="third">
@@ -70,6 +78,7 @@
               :title="`终端在线时长`"
               :flag="playFlag"
               ref="termialPlay"
+              :id="`terminalThird`"
             ></terminal-add>
           </el-tab-pane>
         </el-tabs>
@@ -119,6 +128,7 @@ export default {
       dataMonth: [],
       value: [],
       addTerminalValue: "",
+
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -161,7 +171,6 @@ export default {
   watch: {
     opened(val) {
       if (this.tabIndex == 0) {
-        this.$refs.addTermialNum.flag = false;
         this.$refs.addTermialNum.loading = true;
         this.value = [];
         this.dataMonth = [];
@@ -169,7 +178,6 @@ export default {
           this.getDeviceData();
         }, 200);
       } else if (this.tabIndex == 1) {
-        this.$refs.termialOnline.flag = false;
         this.$refs.termialOnline.loading = true;
         this.secondValue = [];
         this.secondDataMonth = [];
@@ -233,14 +241,22 @@ export default {
     getDeviceData() {
       this.addFlag = false;
       this.$refs.addTermialNum.loading = true;
-      getDeviceReport(this.month).then(res => {
-        this.addFlag = true;
-        this.$refs.addTermialNum.loading = false;
-        for (let i in res) {
-          this.value.push(res[i].count);
-          this.dataMonth.push(this.$filters.formateDate(res[i].m));
-        }
-      });
+      getDeviceReport(this.month)
+        .then(res => {
+          this.$refs.addTermialNum.loading = false;
+          for (let i in res) {
+            this.value.push(res[i].count);
+            this.dataMonth.push(this.$filters.formateDate(res[i].m));
+          }
+          this.addFlag = true;
+        })
+        .catch(res => {
+          if (res) {
+            this.month = {};
+            this.addTerminalValue = "";
+            this.getDeviceData();
+          }
+        });
     },
     addTerminalChange(val) {
       this.addFlag = false;
@@ -259,14 +275,22 @@ export default {
     //终端在线时长
     getTeminalOnline() {
       this.onlineFlag = false;
-      getDeviceOnline(this.secondMonth).then(res => {
-        this.onlineFlag = true;
-        this.$refs.termialOnline.loading = false;
-        for (let i in res) {
-          this.secondValue.push((res[i].duration / 3600 / 1000).toFixed(2));
-          this.secondDataMonth.push(this.$filters.formateDate(res[i].m));
-        }
-      });
+      getDeviceOnline(this.secondMonth)
+        .then(res => {
+          this.onlineFlag = true;
+          this.$refs.termialOnline.loading = false;
+          for (let i in res) {
+            this.secondValue.push((res[i].duration / 3600 / 1000).toFixed(2));
+            this.secondDataMonth.push(this.$filters.formateDate(res[i].m));
+          }
+        })
+        .catch(res => {
+          if (res) {
+            this.secondMonth = {};
+            this.terminalOnlineValue = "";
+            this.getTeminalOnline();
+          }
+        });
     },
     terminalOnlineChange(val) {
       this.onlineFlag = false;
@@ -285,14 +309,22 @@ export default {
     //终端播放时长
     getDevicePlayData() {
       this.playFlag = false;
-      getDevicePlay(this.thirdMonth).then(res => {
-        this.playFlag = true;
-        this.$refs.termialPlay.loading = false;
-        for (let i in res) {
-          this.thirdValue.push((res[i].duration / 3600).toFixed(2));
-          this.thirdDataMonth.push(this.$filters.formateDate(res[i].m));
-        }
-      });
+      getDevicePlay(this.thirdMonth)
+        .then(res => {
+          this.playFlag = true;
+          this.$refs.termialPlay.loading = false;
+          for (let i in res) {
+            this.thirdValue.push((res[i].duration / 3600).toFixed(2));
+            this.thirdDataMonth.push(this.$filters.formateDate(res[i].m));
+          }
+        })
+        .catch(res => {
+          if (res) {
+            this.thirdMonth = {};
+            this.terminalPlayValue = "";
+            this.getDevicePlayData();
+          }
+        });
     },
     terminalPlayChange(val) {
       this.$refs.termialPlay.loading = true;

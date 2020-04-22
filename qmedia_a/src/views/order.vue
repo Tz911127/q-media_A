@@ -1,6 +1,6 @@
 <template>
   <div>
-    <order-table v-show="isDetail" @orderDetail="orderDetail"></order-table>
+    <order-table v-show="isDetail" ref="orderTable" @orderDetail="orderDetail"></order-table>
     <order-detail v-if="!isDetail" @reBack="reBack" :rowData="rowData"></order-detail>
   </div>
 </template>

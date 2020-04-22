@@ -80,9 +80,12 @@
     <!-- 弹窗 -->
     <v-dialog
       ref="orderDialog"
-      :width="title==1?`50%`:`70%`"
-      :showFooter="false"
+      :width="title==1?`50%`:title==3?`30%`:`70%`"
+      :showFooter="title==3?true:false"
       :title="title==0?'投放终端':title==1?'广告预览':title==2?'关联订单':''"
+      @handleClose="handleClose"
+      @beforeClose="beforeClose"
+      @closed="beforeClose"
     >
       <order-device-table
         v-if="title==0"
@@ -92,12 +95,15 @@
       ></order-device-table>
       <program-form v-if="title==1" :data="detailRow"></program-form>
       <order-count v-if="title==2" :data="countTable" :rowData="rowData"></order-count>
+      <div v-if="title==3">
+        <el-input v-model.trim="reason" placeholder="请输入不通过原因"></el-input>
+      </div>
     </v-dialog>
   </div>
 </template>
 
 <script>
-import { getOrderDetail, getProgramReview } from "@/api/order";
+import { getOrderDetail, getProgramReview, checkOrder } from "@/api/order";
 import orderDeviceTable from "../table/orderDeviceTable";
 import orderCount from "../table/orderCount";
 import programForm from "@/components/form/programForm";
@@ -128,9 +134,11 @@ export default {
         limit: 10,
         page: 0
       },
-      countTable: []
+      countTable: [],
+      reason: ""
     };
   },
+  watch: {},
   methods: {
     reBack() {
       this.$emit("reBack");
@@ -171,8 +179,41 @@ export default {
         .catch(err => {});
     },
 
-    checkPass() {},
-    checkNo() {},
+    checkPass() {
+      let params = {
+        id: this.rowData.id,
+        status: 1
+      };
+      checkOrder(params).then(res => {
+        this.toast("操作成功", "success");
+        this.reBack();
+        this.$parent.$refs.orderTable.getData();
+      });
+    },
+    checkNo() {
+      this.$refs.orderDialog.dialogVisible = true;
+      this.title = 3;
+    },
+
+    handleClose() {
+      if (this.reason == "") {
+        this.toast("请输入原因", "error");
+        return;
+      }
+      let params = {
+        id: this.rowData.id,
+        status: 5,
+        reason: this.reason
+      };
+      checkOrder(params).then(res => {
+        this.toast("操作成功", "success");
+        this.reBack();
+        this.$parent.$refs.orderTable.getData();
+      });
+    },
+    beforeClose() {
+      this.reason = "";
+    },
     getDeviceCount() {
       this.title = 0;
       this.$refs.orderDialog.dialogVisible = true;

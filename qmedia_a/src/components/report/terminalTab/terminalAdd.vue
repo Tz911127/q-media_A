@@ -6,6 +6,7 @@
 
 <script>
 import basicEchart from "../common/basicEchart";
+var echarts = require("echarts");
 export default {
   components: {
     basicEchart
@@ -17,22 +18,19 @@ export default {
     flag: {
       type: Boolean,
       default: false
-    }
+    },
+    id: String
   },
 
   data() {
     return {
-      // flag: false,
-      id: "addTerminal",
+      // id: "addTerminal",
       loading: true
     };
   },
 
   mounted() {
-    setTimeout(() => {
-      // this.flag = true;
-      this.loading = false;
-    }, 500);
+    this.loading = false;
   }
 };
 </script>

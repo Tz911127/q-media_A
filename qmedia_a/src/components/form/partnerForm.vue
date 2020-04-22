@@ -44,6 +44,7 @@
             end-placeholder="结束日期"
             style="width:100%"
             format="yyyy 年 MM 月 dd 日"
+            @input="datetimeChange"
             value-format="yyyyMMdd"
           ></el-date-picker>
         </el-form-item>
@@ -160,6 +161,11 @@ export default {
         String(this.editRow.contractStart),
         String(this.editRow.contractEnd)
       ];
+    },
+    datetimeChange(e) {
+      let _this = this;
+      _this.baseForm.dateValue = e;
+      _this.$forceUpdate();
     }
   },
   mounted() {

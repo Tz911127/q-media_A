@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      transitionName: "fade",
+      transitionName: "el-zoom-in-center",
       title: "",
       isDetail: true,
       isEdit: true
