@@ -33,7 +33,7 @@
               ref="terminalAdd"
             ></terminal-add>
           </el-tab-pane>
-          <el-tab-pane label="广告播放时长" name="second">
+          <el-tab-pane label="广告播放时长(小时)" name="second">
             <div style="text-align:right">
               <el-date-picker
                 size="mini"
@@ -52,7 +52,7 @@
               v-if="activeName=='second'"
               :dataMonth="playDataMonth"
               :value="playValue"
-              :title="`广告时长/小时`"
+              :title="`广告时长`"
               :flag="ADtimeFlag"
               :id="`adSecond`"
               ref="terminalOnline"
@@ -117,7 +117,7 @@ export default {
       btnValue: 0,
       options: [
         { label: "新增广告排名", value: 0 },
-        { label: "广告在线时长排名", value: 1 }
+        { label: "广告播放时长排名", value: 1 }
       ],
       tabIndex: 0,
       addAD: false,

@@ -78,8 +78,8 @@ export default {
           this.flag = true;
           this.loading = false;
           for (let i in res) {
-            this.paidValue.push((res[i].addMoneyTotal / 100).toFixed(2));
-            this.addValue.push((res[i].paidMoneyTotal / 100).toFixed(2));
+            this.addValue.push((res[i].addMoneyTotal / 100).toFixed(2));
+            this.paidValue.push((res[i].paidMoneyTotal / 100).toFixed(2));
             this.addCount.push(
               (res[i].paidMoneyTotal / 1000 / res[i].addCount).toFixed(2)
             );

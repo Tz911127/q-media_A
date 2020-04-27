@@ -57,13 +57,13 @@
           <transition name="slide-fade">
             <div v-if="slideFade" style="margin:15px 0">
               <v-city
-                style="width: 160px;margin-right:15px;display:inline-block"
+                style="width: 140px;margin-right:15px;display:inline-block"
                 @handleChange="handleChange"
               ></v-city>
               <v-selectRes
                 :placeholder="`分辨率`"
                 @optionChange="resoleChange"
-                style="width: 160px;margin-right:15px"
+                style="width: 140px;margin-right:15px"
                 :options="resolutes"
               ></v-selectRes>
               <v-select :placeholder="`删除状态`" @optionChange="deleteChange" :options="dels"></v-select>
@@ -93,7 +93,7 @@
               <el-button style="margin-left:10px" type="text" @click="submit(0)">截屏</el-button>
               <el-button type="text" @click="submit(1)">重启</el-button>
               <el-button type="text" @click="submit(4)">磁盘清理</el-button>
-              <el-button type="text" size="mini" @click="submit(2)">获取运行日志</el-button>
+              <el-button type="text"  @click="submit(2)">获取运行日志</el-button>
               <el-button slot="reference" type="success" :disabled="disabled||orderDisabled" v-if="perms('33')">
                 发布命令
                 <i class="el-icon-arrow-down"></i>
@@ -465,14 +465,14 @@ export default {
         type: val
       };
       this.confirm(
-        `确定` +
+        `确定对当前选中的终端执行命令：终端` +
           (val == 0
-            ? "截屏"
+            ? "截屏?"
             : val == 1
-            ? "重启"
+            ? "重启?"
             : val == 2
-            ? "获取运行日志"
-            : "磁盘清理"),
+            ? "获取运行日志?"
+            : "磁盘清理?"),
         "操作",
         {
           request: () => {
@@ -630,7 +630,7 @@ export default {
 
 <style scoped>
 .searchInput {
-  width: 160px;
+  width: 140px;
   float: right;
   margin-right: 15px;
 }

@@ -2,6 +2,7 @@
   <el-dialog
     :modal-append-to-body="true"
     :append-to-body="true"
+    :close-on-click-modal="false"
     :destroy-on-close="true"
     custom-class="vb-dialog"
     :width="width"

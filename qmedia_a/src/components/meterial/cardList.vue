@@ -8,10 +8,10 @@
       <v-select :placeholder="`停用状态`" @optionChange="enabledChange" :options="enableds"></v-select>
       <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
 
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+      <div class="select-wraper searchInput" >
         <el-input placeholder="素材名称" v-model.trim="name" @keyup.enter.native="search" clearable></el-input>
       </div>
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+      <div class="select-wraper searchInput" >
         <el-input placeholder="企业代码" v-model.trim="ck" @keyup.enter.native="search" clearable></el-input>
       </div>
     </div>

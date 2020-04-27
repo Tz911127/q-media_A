@@ -16,6 +16,7 @@
         autoplay
         controls
         style="width: 100%; height: 100%"
+        controlslist="nodownload"
       ></video>
     </div>
     <div style="display:inline-block;width:30%;margin-left:5%;vertical-align:top">

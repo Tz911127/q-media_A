@@ -10,19 +10,14 @@
     >
       <template slot="tableHeader">
         <div style="margin-bottom:15px">
-          <v-select
-            :placeholder="`订单状态`"
-            @optionChange="orderChange"
-            :options="status"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`订单状态`" @optionChange="orderChange" :options="status"></v-select>
           <el-button
             style="float:right;margin-right:10px"
             type="warning"
             icon="el-icon-search"
             @click="search"
           >查询</el-button>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="合伙人/广告主账户"
               v-model.trim="searchObj.firstOrSecAccount"
@@ -31,7 +26,7 @@
             ></el-input>
           </div>
 
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="企业代码"
               v-model.trim="searchObj.ck"
@@ -39,7 +34,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="订单编号/名称"
               v-model.trim="searchObj.orderNo"
@@ -47,7 +42,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="合同编号"
               v-model.trim="searchObj.contractNo"

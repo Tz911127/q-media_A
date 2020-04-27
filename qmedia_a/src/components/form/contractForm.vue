@@ -56,5 +56,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.el-form-item {
+  margin-bottom: 0;
+}
 </style>

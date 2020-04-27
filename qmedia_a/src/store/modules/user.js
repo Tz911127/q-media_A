@@ -26,17 +26,23 @@ const user = {
             state.access.push("-1")
             for (let i = 0; i < routeList.length; i++) {
                 if (!routeList[i].meta.hideInMenu && state.access.indexOf(routeList[i].access) > -1) {
+                    routeList[i].item = []
                     permission_routes.push(routeList[i]);
                     permission_routes.map(val => {
                         if (val.children) {
                             val.children.map((e, i) => {
-                                if (state.access.indexOf(e.access) == -1) {
-                                    val.children.splice(i, 1)
+                                if (state.access.indexOf(e.access) > -1) {
+                                    // val.children.splice(i, 1)
+                                    if (val.item.indexOf(e) == -1) {
+                                        val.item.push(e)
+                                    }
+
+
                                 }
                             })
                         }
                     })
-
+                    console.log(routeList[i].item)
                 }
             }
             return permission_routes;

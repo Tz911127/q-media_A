@@ -9,12 +9,7 @@
     ></basic-table>
     <v-dialog ref="orderReport" :showFooter="false" :title="`详情`" :width="`70%`">
       <div style="margin-top:-15px">
-        <v-select
-          :placeholder="`合同状态`"
-          @optionChange="orderChange"
-          :options="status"
-          style="width: 160px;margin-right:15px"
-        ></v-select>
+        <v-select :placeholder="`合同状态`" @optionChange="orderChange" :options="status"></v-select>
         <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
         <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
           <el-input
@@ -137,10 +132,10 @@ export default {
                 {row.state == 0
                   ? "待签署"
                   : row.state == 1
-                  ? "待审核"
+                  ? "待付款"
                   : row.state == 2
-                  ? "审核通过"
-                  : "审核不通过"}
+                  ? "已付款"
+                  : "已关闭"}
               </span>
             );
           }
@@ -163,9 +158,9 @@ export default {
       total: 0,
       status: [
         { name: "待签署", val: 0 },
-        { name: "待审核", val: 1 },
-        { name: "审核通过", val: 2 },
-        { name: "审核不通过", val: 3 }
+        { name: "待付款", val: 1 },
+        { name: "已付款", val: 2 },
+        { name: "已关闭", val: 3 }
       ],
       keyOrName: ""
     };

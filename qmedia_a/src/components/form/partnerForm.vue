@@ -79,6 +79,16 @@ export default {
         callback();
       }
     };
+    let validatorCode = (rule, value, callback) => {
+      var rex = /^[a-z]{3,16}]?$/;
+      if (value == "") {
+        callback(new Error("请输入企业代码"));
+      } else if (!rex.test(value)) {
+        callback(new Error("请输入3-16位小写字母"));
+      } else {
+        callback();
+      }
+    };
     return {
       baseForm: {
         key: "",
@@ -92,12 +102,7 @@ export default {
       rulesForm: {
         key: [
           { required: true, message: "请输入企业代码", trigger: "blur" },
-          {
-            min: 3,
-            max: 16,
-            message: "请输入3-16位小写字母",
-            trigger: "blur"
-          }
+          { validator: validatorCode }
         ],
         name: [
           { required: true, message: "请输入企业简称", trigger: "blur" },

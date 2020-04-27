@@ -197,7 +197,7 @@ const routes = [{
             {
                 path: '/report',
                 name: 'report',
-                access: '-1',
+                access: 'b',
                 meta: {
                     title: '数据统计',
                     hideInMenu: false,
@@ -207,7 +207,7 @@ const routes = [{
                 children: [{
                         path: 'terminalReport',
                         name: 'terminalReport',
-                        access: '-1',
+                        access: 'b1',
                         meta: {
                             title: '终端统计',
                         },
@@ -216,7 +216,7 @@ const routes = [{
                     {
                         path: 'adReport',
                         name: 'adReport',
-                        access: '-1',
+                        access: 'b2',
                         meta: {
                             title: '广告统计',
                         },
@@ -225,7 +225,7 @@ const routes = [{
                     {
                         path: 'orderReport',
                         name: 'orderReport',
-                        access: '-1',
+                        access: 'b3',
                         meta: {
                             title: '合同统计',
                         },
@@ -235,7 +235,7 @@ const routes = [{
                     {
                         path: 'dataReport',
                         name: 'dataReport',
-                        access: '-1',
+                        access: 'b4',
                         meta: {
                             title: '数据导出',
                         },

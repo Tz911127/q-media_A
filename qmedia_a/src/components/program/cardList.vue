@@ -7,13 +7,13 @@
         style="width: 160px;margin-right:15px"
         :options="resolutes"
       ></v-selectRes>
-      <v-select :placeholder="`节目状态`" @optionChange="statesChange" :options="states"></v-select>
+      <v-select :placeholder="`广告状态`" @optionChange="statesChange" :options="states"></v-select>
       <v-select :placeholder="`删除状态`" @optionChange="delChange" :options="dels"></v-select>
       <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
-        <el-input placeholder="素材名称" v-model.trim="name" @keyup.enter.native="search" clearable></el-input>
+      <div class="select-wraper searchInput">
+        <el-input placeholder="广告名称" v-model.trim="name" @keyup.enter.native="search" clearable></el-input>
       </div>
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+      <div class="select-wraper searchInput">
         <el-input placeholder="企业代码" v-model.trim="ck" @keyup.enter.native="search" clearable></el-input>
       </div>
     </div>
@@ -72,7 +72,7 @@
       :total="total"
     ></el-pagination>
     <!-- 预览 -->
-    <v-dialog ref="programDialog" :width="`50%`" :showFooter="false" title="节目预览">
+    <v-dialog ref="programDialog" :width="`50%`" :showFooter="false" title="广告预览">
       <program-form :data="programForm"></program-form>
     </v-dialog>
   </div>

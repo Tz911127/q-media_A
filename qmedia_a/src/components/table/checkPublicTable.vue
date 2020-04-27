@@ -4,8 +4,8 @@
       <i class="el-icon-arrow-left"></i> 返回/查看发布终端
     </div>
     <div class="notice">
-      <div>广告名称：{{rowData.name}}</div>
-      <div>
+      <span>广告名称：{{this.$filters.filterPrograms(rowData.name,rowData.del)}} </span>
+      <span>
         <el-popover trigger="hover" placement="top">
           <p>播放次数:连续播放{{times}}次</p>
           <p>优先级: 优先级{{level}}</p>
@@ -17,10 +17,10 @@
             >{{item.start}}-{{item.end}} {{item.weeks|filterWeek(scheduleType)}}</div>
           </div>
 
-          <span slot="reference" class="name-wrapper">播放时间：{{schedules|filtersDate}}</span>
+          <span slot="reference" class="name-wrapper">播放时间：{{schedules|filtersDate}} </span>
         </el-popover>
-      </div>
-      <div>播放方式：{{scheduleType|filtersType}}</div>
+      </span>
+      <span>播放方式：{{scheduleType|filtersType}}</span>
     </div>
     <basic-table
       :loading="loading"
@@ -88,13 +88,13 @@ export default {
         {
           label: "在线状态",
           render(h, row) {
-            return <span>{row.state == 0 ? "离线" : "在线"}</span>;
+            return <span>{row.status == 0 ? "离线" : "在线"}</span>;
           }
         },
         {
           label: "状态",
           render(h, row) {
-            return <span>{row.syncStatus == 0 ? "待执行" : "成功"}</span>;
+            return <span>{row.deviceState == 0 ? "待执行" : "成功"}</span>;
           }
         }
       ],

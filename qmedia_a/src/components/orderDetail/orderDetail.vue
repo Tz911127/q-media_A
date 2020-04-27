@@ -27,7 +27,10 @@
         <el-button type="text" @click="getDeviceCount">{{baseForm.deviceCount}}台</el-button>
       </el-form-item>
       <el-form-item label="广告名称">
-        <el-button type="text" @click="proRev">{{baseForm.programName}}</el-button>
+        <el-button
+          type="text"
+          @click="proRev"
+        >{{this.$filters.filterPrograms(baseForm.programName,baseForm.del) }}</el-button>
       </el-form-item>
       <el-form-item label="投放时段">
         <template>
@@ -274,6 +277,7 @@ export default {
   padding-left: 10px;
   border-radius: 4px;
   margin-bottom: 20px;
+  border: none;
 }
 .status span {
   margin-right: 50px;

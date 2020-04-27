@@ -10,26 +10,11 @@
     >
       <template slot="tableHeader">
         <div style="margin:15px 0 ">
-          <v-select
-            :placeholder="`账户状态`"
-            @optionChange="enabledChange"
-            :options="enableds"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`企业类型`"
-            @optionChange="typeChange"
-            :options="types"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`认证状态`"
-            @optionChange="authChange"
-            :options="auths"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`账户状态`" @optionChange="enabledChange" :options="enableds"></v-select>
+          <v-select :placeholder="`企业类型`" @optionChange="typeChange" :options="types"></v-select>
+          <v-select :placeholder="`认证状态`" @optionChange="authChange" :options="auths"></v-select>
           <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
-          <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="企业代码/企业简称"
               v-model.trim="keyOrName"
@@ -120,19 +105,19 @@ export default {
           render: (h, row) => {
             let operateList = [
               {
-                isShow: this.perms('21'),
+                isShow: this.perms("21"),
                 title: "编辑",
                 icon: "el-icon-edit",
                 method: () => this.editBusiness(row)
               },
               {
-                isShow: this.perms('22'),
+                isShow: this.perms("22"),
                 title: row.enabled == 0 ? "启用" : "冻结",
                 icon: row.enabled == 0 ? "el-icon-unlock" : "el-icon-lock",
                 method: () => this.enableBusiness(row)
               },
               {
-                isShow: (row.type == 0 ? true : false)&&this.perms('24'),
+                isShow: (row.type == 0 ? true : false) && this.perms("24"),
                 title: "设置组织机构",
                 icon: "el-icon-tickets",
                 method: () => {
@@ -143,7 +128,7 @@ export default {
                 }
               },
               {
-                isShow: (row.type == 0 ? true : false)&&this.perms('23'),
+                isShow: (row.type == 0 ? true : false) && this.perms("23"),
                 title: "设置垫播",
                 icon: "el-icon-files",
                 method: () => this.setFill(row)

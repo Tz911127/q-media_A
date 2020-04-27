@@ -14,7 +14,12 @@
           <router-link class="title" active-class="active" tag="div" :to="{name: route.name}">
             <i :class="route.meta.icon"></i>
             <span>{{route.meta.title}}</span>
-            <el-badge :value="value" :max="99" class="item" v-if="route.meta.title == '审核管理'"></el-badge>
+            <el-badge
+              :value="value==0?'':value"
+              :max="99"
+              class="item"
+              v-if="route.meta.title == '审核管理'"
+            ></el-badge>
           </router-link>
           <span slot="title" v-show="isCollapse">{{route.meta.title}}</span>
         </el-menu-item>
@@ -23,7 +28,7 @@
             <i :class="route.meta.icon"></i>
             <span>{{route.meta.title}}</span>
           </template>
-          <template v-for="child in route.children">
+          <template v-for="child in route.item">
             <router-link
               :key="child.name"
               :to="route.path+'/'+child.path"

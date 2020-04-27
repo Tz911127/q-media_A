@@ -16,6 +16,7 @@
         @sort-change="handleSortChange"
         :row-class-name="tableRowClassName"
         :header-cell-style="{background:'#fff',color:'#555'}"
+
       >
         <el-table-column v-if="muti" width="50" type="selection"></el-table-column>
         <el-table-column v-if="showIndex" :index="indexMethod" width="40" type="index"></el-table-column>
@@ -201,4 +202,7 @@ export default {
 };
 </script>
 <style>
+.el-table__header-wrapper .el-checkbox__inner {
+margin-left: 5px;
+}
 </style>

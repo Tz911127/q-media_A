@@ -5,7 +5,7 @@
     :placeholder="placeholder"
     @change="optionChange"
     :clearable="clearable"
-    style="width: 160px;margin-right:15px"
+    style="width: 140px;margin-right:15px"
   >
     <el-option v-for="item in options" :key="item.val" :label="item.name" :value="item.val"></el-option>
   </el-select>

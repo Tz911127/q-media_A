@@ -10,19 +10,14 @@
     >
       <template slot="tableHeader">
         <div style="margin-bottom:15px">
-          <v-select
-            :placeholder="`账户类型`"
-            @optionChange="typeChange"
-            :options="types"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`账户类型`" @optionChange="typeChange" :options="types"></v-select>
           <el-button
             style="float:right;margin-right:10px"
             type="warning"
             icon="el-icon-search"
             @click="search"
           >查询</el-button>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="角色名称"
               v-model.trim="searchObj.name"
@@ -30,7 +25,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="企业代码"
               v-model.trim="searchObj.ck"

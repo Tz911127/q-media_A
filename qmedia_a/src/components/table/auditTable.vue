@@ -1,22 +1,15 @@
 <template>
   <div>
     <div style="margin: 15px 0;">
-      <v-select
-        :placeholder="`内容类型`"
-        @optionChange="typeChange"
-        :options="types"
-        ref="navType"
-        style="width: 160px;margin-right:15px"
-      ></v-select>
+      <v-select :placeholder="`内容类型`" @optionChange="typeChange" :options="types" ref="navType"></v-select>
       <v-select
         :placeholder="`审核类型`"
         @optionChange="checkTypeChange"
         :options="checkTypes"
         ref="checkType"
-        style="width: 160px;margin-right:15px"
       ></v-select>
       <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+      <div class="select-wraper searchInput">
         <el-input
           placeholder="企业代码"
           v-model.trim="searchObj.ck"
@@ -24,7 +17,7 @@
           clearable
         ></el-input>
       </div>
-      <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+      <div class="select-wraper searchInput">
         <el-input
           placeholder="内容名称"
           v-model.trim="searchObj.targetName"

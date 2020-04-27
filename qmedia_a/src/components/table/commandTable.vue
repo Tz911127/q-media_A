@@ -10,20 +10,10 @@
     >
       <template slot="tableHeader">
         <div style="margin-bottom: 15px;">
-          <v-select
-            :placeholder="`终端命令`"
-            @optionChange="typeChange"
-            :options="types"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`命令状态`"
-            @optionChange="statusChange"
-            :options="statuses"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`终端命令`" @optionChange="typeChange" :options="types"></v-select>
+          <v-select :placeholder="`命令状态`" @optionChange="statusChange" :options="statuses"></v-select>
           <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
-          <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="终端编号"
               v-model.trim="searchItem.sn"
@@ -31,7 +21,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="操作账户"
               v-model.trim="searchItem.account"

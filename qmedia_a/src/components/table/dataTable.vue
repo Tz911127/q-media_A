@@ -10,18 +10,8 @@
     >
       <template slot="tableHeader">
         <div style="margin:15px 0">
-          <v-select
-            :placeholder="`业务类型`"
-            @optionChange="typeChange"
-            :options="types"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`报表状态`"
-            @optionChange="statusChange"
-            :options="statuses"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`业务类型`" @optionChange="typeChange" :options="types"></v-select>
+          <v-select :placeholder="`报表状态`" @optionChange="statusChange" :options="statuses"></v-select>
           <el-date-picker
             v-model="dateValue"
             type="daterange"
@@ -32,7 +22,7 @@
             @change="dateChange"
           ></el-date-picker>
           <el-button style="float:right" type="warning" icon="el-icon-search" @click="search">查询</el-button>
-          <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="操作账户"
               v-model.trim="creator"
@@ -40,7 +30,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="width:160px;float:right;margin-right:15px">
+          <div class="select-wraper searchInput">
             <el-input placeholder="报表名称" v-model.trim="name" @keyup.enter.native="search" clearable></el-input>
           </div>
         </div>
@@ -66,7 +56,7 @@ import basicTable from "./components/basicTable";
 import addReport from "../form/addReport";
 import reportForm from "../form/reportForm";
 import { getReportJob, delReportJob, postReportJob } from "@/api/report.js";
-const FileSaver = require('file-saver');
+const FileSaver = require("file-saver");
 export default {
   components: {
     basicTable,
@@ -143,7 +133,10 @@ export default {
                 title: "下载",
                 icon: "el-icon-download",
                 method: row => {
-                  FileSaver.saveAs(this.userInfo.cdnImgUrl + row.path, row.name+row.start+'-'+row.end);
+                  FileSaver.saveAs(
+                    this.userInfo.cdnImgUrl + row.path,
+                    row.name + row.start + "-" + row.end
+                  );
                 }
               },
               {

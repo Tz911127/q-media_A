@@ -77,8 +77,8 @@ export default {
             name: "新增合同金额",
             type: "bar",
             data: this.value,
-            barWidth: 30,
-            stack: "1",
+            barWidth: 15,
+            stack: "0",
             label: {
               show: false,
               position: "insideRight"
@@ -88,7 +88,7 @@ export default {
             name: "已付款合同金额",
             type: "bar",
             data: this.paidValue,
-            barWidth: 30,
+            barWidth: 15,
             stack: "1",
             label: {
               show: false,

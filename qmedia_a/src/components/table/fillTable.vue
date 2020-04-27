@@ -11,7 +11,7 @@
       >
         <el-table-column property="name" label="广告名称">
           <template slot-scope="scope">
-            <span class="btn-detail">{{scope.row.name}}</span>
+            <span class="btn-detail" @click="review(scope.row)">{{scope.row.name}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -26,12 +26,18 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <!-- 预览 -->
+    <v-dialog ref="programDialog" :width="`50%`" :showFooter="false" title="广告预览">
+      <program-form :data="programForm"></program-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { getCompanyFillList } from "@/api/business";
+import { getProgramDetail } from "@/api/program";
 import dialogTable from "./components/dialogTable";
+import programForm from "@/components/form/programForm";
 export default {
   props: {
     fillData: Array,
@@ -40,7 +46,8 @@ export default {
     loading: Boolean
   },
   components: {
-    dialogTable
+    dialogTable,
+    programForm
   },
   data() {
     return {
@@ -56,7 +63,11 @@ export default {
         {
           label: "当前垫播广告",
           render: (h, row) => {
-            return <span class="btn-detail">{row.name}</span>;
+            return (
+              <span onClick={() => this.review(row)} class="btn-detail">
+                {row.name}
+              </span>
+            );
           }
         },
         {
@@ -85,7 +96,8 @@ export default {
             });
           }
         }
-      ]
+      ],
+      programForm: {}
     };
   },
   methods: {
@@ -103,6 +115,18 @@ export default {
     },
     setProgram(row) {
       this.$emit("setProgram", row);
+    },
+    review(row) {
+      getProgramDetail(row).then(res => {
+        this.$refs.programDialog.dialogVisible = true;
+        this.programForm = res;
+        this.programContent = {};
+        this.programContent.content = JSON.parse(res.content).pages;
+        this.programContent.pixelHorizontal = res.width;
+        this.programContent.pixelVertical = res.height;
+        this.programContent.programDialogType = 1;
+        this.$store.commit("SET_PROGRAM_CONTENT", this.programContent);
+      });
     }
   }
 };

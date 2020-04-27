@@ -10,25 +10,15 @@
     >
       <template slot="tableHeader">
         <div style="margin-bottom:15px">
-          <v-select
-            :placeholder="`账户类型`"
-            @optionChange="typeChange"
-            :options="types"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
-          <v-select
-            :placeholder="`账户状态`"
-            @optionChange="enabledChange"
-            :options="enableds"
-            style="width: 160px;margin-right:15px"
-          ></v-select>
+          <v-select :placeholder="`账户类型`" @optionChange="typeChange" :options="types"></v-select>
+          <v-select :placeholder="`账户状态`" @optionChange="enabledChange" :options="enableds"></v-select>
           <el-button
             style="float:right;margin-right:10px"
             type="warning"
             icon="el-icon-search"
             @click="search"
           >查询</el-button>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="邮箱"
               v-model.trim="searchObj.email"
@@ -36,7 +26,7 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="企业代码"
               v-model.trim="searchObj.ck"
@@ -44,18 +34,18 @@
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="登录账户/账户名称/手机号"
-              v-model.trim="searchObj.roleName"
+              v-model.trim="searchObj.accountName"
               @keyup.enter.native="search"
               clearable
             ></el-input>
           </div>
-          <div class="select-wraper" style="float:right;margin-right:10px;width:160px">
+          <div class="select-wraper searchInput">
             <el-input
               placeholder="角色名称"
-              v-model.trim="searchObj.accountName"
+              v-model.trim="searchObj.roleName"
               @keyup.enter.native="search"
               clearable
             ></el-input>

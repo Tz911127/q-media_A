@@ -36,6 +36,7 @@ export default {
         { label: "标题", prop: "title" },
         {
           label: "播放时间",
+          overflow:true,
           render: (h, row) => {
             return (
               <span>

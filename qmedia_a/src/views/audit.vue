@@ -242,7 +242,7 @@ export default {
         this.tableParams.targetName = this.$refs.check6.searchObj.targetName;
       }
 
-      this.getData();
+      this.getCheckData();
     },
     handleSizeChange(val) {
       this.tableParams.limit = val;

@@ -1,3 +1,7 @@
+import {
+    compileToFunctions
+} from "vue-template-compiler";
+
 export function formateDate(d) {
     let date = String(d)
     if (date) {
@@ -48,7 +52,7 @@ export function formatSeconds(s) {
     var hour = Math.floor((s) / 3600);
     var minute = Math.floor((s - hour * 3600) / 60);
     var second = s - hour * 3600 - minute * 60;
-    return align(hour) + "时" + align(minute) + "分" + align(second) + "秒";
+    return align(hour) + ":" + align(minute) + ":" + align(second);
 }
 
 
@@ -83,6 +87,7 @@ export function filterTime(time) {
 
 //已删除的广告名称转换
 export function filterPrograms(name, type) {
+
     if (type == 0) {
         return name
     } else {

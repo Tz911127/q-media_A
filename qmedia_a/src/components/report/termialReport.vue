@@ -32,7 +32,7 @@
               :id="`terminalFirst`"
             ></terminal-add>
           </el-tab-pane>
-          <el-tab-pane label="终端在线时长" name="second">
+          <el-tab-pane label="终端在线时长(小时)" name="second">
             <div style="text-align:right">
               <el-date-picker
                 size="mini"
@@ -57,7 +57,7 @@
               :id="`terminalSecond`"
             ></terminal-add>
           </el-tab-pane>
-          <el-tab-pane label="终端播放时长/小时" name="third">
+          <el-tab-pane label="终端播放时长(小时)" name="third">
             <div style="text-align:right">
               <el-date-picker
                 size="mini"
@@ -75,7 +75,7 @@
               v-if="activeName=='third'"
               :dataMonth="thirdDataMonth"
               :value="thirdValue"
-              :title="`终端在线时长`"
+              :title="`终端播放时长`"
               :flag="playFlag"
               ref="termialPlay"
               :id="`terminalThird`"
